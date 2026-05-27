@@ -1,0 +1,62 @@
+# Root .gitignore for Impact & Dependency project
+
+# Dependency directories
+node_modules/
+jspm_packages/
+venv/
+.venv/
+env/
+.env/
+
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment files (Secrets & local configs)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+Backend/.env
+Client/.env
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor/IDE files
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.bak
+*.tmp
+
+# Databases & local sqlite files
+*.db
+*.sqlite3
+
+# Temporary / test upload files
+Backend/test.kml
+Client/test.kmz

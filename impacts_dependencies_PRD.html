@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD: Impacts & Dependencies Module</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252a38;
+    --accent: #4ade80;
+    --accent2: #38bdf8;
+    --accent3: #f59e0b;
+    --danger: #f87171;
+    --text: #e8eaf0;
+    --text-muted: #8892a4;
+    --text-dim: #4a5568;
+    --vl: #4ade80;
+    --l: #a3e635;
+    --m: #fbbf24;
+    --h: #f97316;
+    --vh: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 14px;
+  }
+
+  /* NAVIGATION */
+  nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 240px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 28px 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .nav-logo .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .nav-logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .nav-section {
+    padding: 6px 0;
+  }
+
+  .nav-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 20px 4px;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 7px 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 12.5px;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--text);
+    background: var(--surface2);
+    border-left-color: var(--accent);
+  }
+
+  .nav-item span.num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-right: 8px;
+  }
+
+  /* MAIN CONTENT */
+  main {
+    margin-left: 240px;
+    padding: 48px 56px;
+    max-width: 960px;
+  }
+
+  section {
+    margin-bottom: 72px;
+    padding-top: 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 28px 0 12px;
+  }
+
+  h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 20px 0 8px;
+  }
+
+  p {
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    font-size: 13.5px;
+  }
+
+  /* CALLOUT BOX */
+  .callout {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .callout.warn { border-left-color: var(--accent3); }
+  .callout.danger { border-left-color: var(--danger); }
+  .callout.info { border-left-color: var(--accent2); }
+
+  .callout p { margin: 0; font-size: 13px; }
+  .callout strong { color: var(--text); }
+
+  /* CODE BLOCK */
+  pre {
+    background: #0a0c10;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 12px 0 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #a8b4c8;
+  }
+
+  pre .comment { color: #3d4f6a; }
+  pre .key { color: var(--accent2); }
+  pre .val { color: var(--accent); }
+  pre .type { color: var(--accent3); }
+  pre .label { color: var(--danger); }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent2);
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 24px;
+    font-size: 12.5px;
+  }
+
+  th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td strong { color: var(--text); }
+  td code { font-size: 11px; }
+
+  /* RATING BADGES */
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-vl { background: rgba(74,222,128,0.15); color: var(--vl); border: 1px solid rgba(74,222,128,0.3); }
+  .badge-l  { background: rgba(163,230,53,0.15); color: var(--l); border: 1px solid rgba(163,230,53,0.3); }
+  .badge-m  { background: rgba(251,191,36,0.15); color: var(--m); border: 1px solid rgba(251,191,36,0.3); }
+  .badge-h  { background: rgba(249,115,22,0.15); color: var(--h); border: 1px solid rgba(249,115,22,0.3); }
+  .badge-vh { background: rgba(239,68,68,0.15); color: var(--vh); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* CARD GRID */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0 24px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    transition: border-color 0.15s;
+  }
+
+  .card:hover { border-color: var(--accent2); }
+
+  .card .card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .card .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .card .card-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* KANBAN CARD */
+  .kanban-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kanban-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+  }
+
+  .kanban-card.be::before { background: var(--accent2); }
+  .kanban-card.fe::before { background: var(--accent); }
+  .kanban-card.data::before { background: var(--accent3); }
+
+  .kanban-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .kanban-id {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .kanban-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .tag-be { background: rgba(56,189,248,0.15); color: var(--accent2); }
+  .tag-fe { background: rgba(74,222,128,0.15); color: var(--accent); }
+  .tag-data { background: rgba(245,158,11,0.15); color: var(--accent3); }
+  .tag-p1 { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .tag-p2 { background: rgba(249,115,22,0.15); color: var(--h); }
+  .tag-p3 { background: rgba(74,222,128,0.15); color: var(--accent); }
+
+  .kanban-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .kanban-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .kanban-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .kanban-tasks li {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .kanban-tasks li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+
+  .kanban-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 20px 0 28px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .flow-node {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    min-width: 120px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .flow-node.highlight {
+    border-color: var(--accent);
+    background: rgba(74,222,128,0.08);
+  }
+
+  .flow-node .fn-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .flow-node .fn-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .flow-arrow {
+    color: var(--text-dim);
+    font-size: 16px;
+    padding: 0 8px;
+    flex-shrink: 0;
+  }
+
+  /* VS TABLE */
+  .vs-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0 24px;
+  }
+
+  .vs-col {
+    background: var(--surface);
+    padding: 20px 24px;
+  }
+
+  .vs-col-header {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vs-col.nala .vs-col-header { color: var(--text-muted); }
+  .vs-col.ours .vs-col-header { color: var(--accent); }
+
+  .vs-item {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    padding: 6px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .vs-item::before { content: '·'; color: var(--text-dim); flex-shrink: 0; }
+  .vs-col.ours .vs-item::before { content: '✦'; color: var(--accent); }
+
+  /* SCHEMA BLOCK */
+  .schema-block {
+    background: #0a0c10;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0 24px;
+  }
+
+  .schema-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .schema-table-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+  }
+
+  .schema-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .schema-fields {
+    padding: 12px 0;
+  }
+
+  .schema-field {
+    display: grid;
+    grid-template-columns: 200px 120px 1fr;
+    gap: 0;
+    padding: 6px 20px;
+    border-bottom: 1px solid rgba(37,42,56,0.5);
+    align-items: baseline;
+  }
+
+  .schema-field:last-child { border-bottom: none; }
+
+  .sf-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text);
+  }
+
+  .sf-name.pk { color: var(--accent3); }
+  .sf-name.fk { color: var(--accent2); }
+  .sf-name.computed { color: var(--accent); font-style: italic; }
+
+  .sf-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    color: var(--text-dim);
+  }
+
+  .sf-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  /* FORMULA BOX */
+  .formula {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .formula-title {
+    font-size: 10px;
+    color: var(--accent3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .formula-eq {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 2;
+  }
+
+  .formula-vars {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .formula-var {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 3px 0;
+  }
+
+  /* MATRIX TABLE */
+  .matrix-table {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    border-collapse: collapse;
+    margin: 12px 0 24px;
+  }
+
+  .matrix-table th, .matrix-table td {
+    padding: 8px 14px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .matrix-table th { background: var(--surface2); color: var(--text-muted); font-size: 10px; }
+
+  /* HERO */
+  .hero {
+    padding: 48px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 56px;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .meta-item span {
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  ul.list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+  }
+
+  ul.list li {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 5px 0 5px 18px;
+    position: relative;
+  }
+
+  ul.list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 900px) {
+    nav { display: none; }
+    main { margin-left: 0; padding: 24px 20px; }
+    .two-col { grid-template-columns: 1fr; }
+    .vs-table { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo">
+    <span class="tag">Product Spec · v1.0</span>
+    <h1>Impacts &amp; Dependencies<br>Module</h1>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-item active" href="#overview"><span class="num">01</span>What We're Building</a>
+    <a class="nav-item" href="#why"><span class="num">02</span>Why We Beat Nala</a>
+    <a class="nav-item" href="#scope"><span class="num">03</span>Scope & Placement</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Architecture</div>
+    <a class="nav-item" href="#datamodel"><span class="num">04</span>Data Model</a>
+    <a class="nav-item" href="#computed"><span class="num">05</span>Computed Logic</a>
+    <a class="nav-item" href="#datasources"><span class="num">06</span>Data Sources</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Product</div>
+    <a class="nav-item" href="#views"><span class="num">07</span>UI Views Spec</a>
+    <a class="nav-item" href="#beyond"><span class="num">08</span>Beyond Nala (TNFD+)</a>
+    <a class="nav-item" href="#kanban"><span class="num">09</span>Kanban Cards</a>
+    <a class="nav-item" href="#handover"><span class="num">10</span>Handover Checklist</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Product Requirements Document</div>
+    <h1>Impacts &amp; Dependencies<br><span>Module</span></h1>
+    <p>A complete build spec for the site-level nature impact and ecosystem dependency assessment module, aligned to TNFD LEAP and ENCORE. Designed to match — and exceed — Nala's implementation.</p>
+    <div class="hero-meta">
+      <div class="meta-item">STATUS <span>Ready for Development</span></div>
+      <div class="meta-item">PHASE <span>L2.7 → A3 Bridge</span></div>
+      <div class="meta-item">DATA SOURCE <span>ENCORE + WRI + IBAT</span></div>
+      <div class="meta-item">FRAMEWORK <span>TNFD LEAP (primary), CSRD ESRS E4 (secondary)</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: WHAT WE'RE BUILDING -->
+  <section id="overview">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>What We're Building</h2>
+    </div>
+
+    <p>This module answers a single question for every site in a company's portfolio: <strong style="color:var(--text)">How much does this site impact nature, and how much does it depend on it?</strong></p>
+
+    <p>It takes ENCORE activity-based data and location-specific State of Nature data, combines them using a defined methodology, and surfaces results as four views: a portfolio dashboard, a site list, a site impact view, and a site dependency view.</p>
+
+    <div class="callout">
+      <p><strong>Think of it this way:</strong> ENCORE tells you what pressures a cement plant <em>typically</em> exerts. State of Nature data tells you whether the ecosystem at <em>this specific cement plant's location</em> is already stressed. Together they tell you if this site is actually a problem — or just theoretically one.</p>
+    </div>
+
+    <h3>Four Screens to Build</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-num">SCREEN 01</div>
+        <div class="card-title">Portfolio Dashboard</div>
+        <div class="card-desc">KPIs, pressure/dependency bar charts, impact level donut, geo map, top priority sites list</div>
+      </div>
+      <div class="card">
+        <div class="card-num">SCREEN 02</div>
+        <div class="card-title">All Sites List</div>
+        <div class="card-desc">Filterable table with TNFD priority flag, 5 key pressures, 5 key dependencies as icon-badges</div>
+      </div>
+      <div class="card">
+        <div class="card-num">SCREEN 03</div>
+        <div class="card-title">Site: Impacts Tab</div>
+        <div class="card-desc">12 pressure cards grouped, Impact Level table across 4 Nature Impacts, overall score</div>
+      </div>
+      <div class="card">
+        <div class="card-num">SCREEN 04</div>
+        <div class="card-title">Site: Dependencies Tab</div>
+        <div class="card-desc">25 ecosystem service cards grouped, Dependency Level table across 3 categories</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: WHY WE BEAT NALA -->
+  <section id="why">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Why We Beat Nala</h2>
+    </div>
+
+    <p>Nala is CSRD-first. We are TNFD-first. This single difference changes what we surface, how we score, and what actions we recommend.</p>
+
+    <div class="vs-table">
+      <div class="vs-col nala">
+        <div class="vs-col-header">🟠 Nala</div>
+        <div class="vs-item">CSRD ESRS E4 materiality as primary output</div>
+        <div class="vs-item">Impact Level informs reporting obligation, not financial risk</div>
+        <div class="vs-item">Dependency Level shown but not connected to risk pathway</div>
+        <div class="vs-item">No explicit link to prioritization framework</div>
+        <div class="vs-item">GHG Emissions included in pressures (duplicates TCFD)</div>
+        <div class="vs-item">State of Nature sourced generically</div>
+        <div class="vs-item">No scenario sensitivity</div>
+      </div>
+      <div class="vs-col ours">
+        <div class="vs-col-header">✦ Our Build</div>
+        <div class="vs-item">TNFD LEAP A1–A3 risk pathway as primary output</div>
+        <div class="vs-item">Impact Level feeds directly into A3 financial risk quantification</div>
+        <div class="vs-item">Dependency Level explicitly feeds TNFD "dependency → transition risk" translation</div>
+        <div class="vs-item">Composite Priority Score (0–100) enables ranked materiality triage</div>
+        <div class="vs-item">GHG excluded (routes to TCFD); focus on non-climate nature pressures</div>
+        <div class="vs-item">State of Nature sourced site-specifically via WRI Aqueduct + IBAT APIs</div>
+        <div class="vs-item">Architecture ready for scenario-based SoN adjustments</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: SCOPE & PLACEMENT -->
+  <section id="scope">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Scope &amp; Placement in TNFD Workflow</h2>
+    </div>
+
+    <p>This module is the bridge between L2 ENCORE screening and Phase 4 risk quantification. It is not a new phase — it is the output layer of L2 that feeds into A1–A3.</p>
+
+    <div class="flow">
+      <div class="flow-node">
+        <div class="fn-label">L1</div>
+        <div class="fn-title">Site Inventory</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-label">L2</div>
+        <div class="fn-title">ENCORE Screening</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">
+        <div class="fn-label">L2.7 ← THIS MODULE</div>
+        <div class="fn-title">Impacts &amp; Dependencies</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-label">A1–A3</div>
+        <div class="fn-title">Risk Assessment</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-label">TNFD</div>
+        <div class="fn-title">Disclosure</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h4>Inputs (what feeds this module)</h4>
+        <ul class="list">
+          <li>L1: Site inventory (ID, name, location, activities)</li>
+          <li>ENCORE API: Pressure + dependency ratings per SASB × Biome</li>
+          <li>WRI Aqueduct: Water stress per lat/lng</li>
+          <li>IBAT / PBF: MSA + BII scores per lat/lng</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Outputs (what this module produces)</h4>
+        <ul class="list">
+          <li>Overall Impact Level per site (VL → VH + 0–10 score)</li>
+          <li>Dependency Level per site per category</li>
+          <li>Composite Priority Score for A3 triage</li>
+          <li>TNFD Core Metrics data points (C3.0, A5.3, etc.)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: DATA MODEL -->
+  <section id="datamodel">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Data Model</h2>
+    </div>
+
+    <p>Three tables. Everything else is computed. No subsheets, no redundancy.</p>
+
+    <!-- TABLE 1 -->
+    <div class="schema-block">
+      <div class="schema-header">
+        <span class="schema-table-name">sites</span>
+        <span class="schema-desc">Exists in L1 — reference only, no new columns needed</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field">
+          <span class="sf-name pk">site_id</span>
+          <span class="sf-type">UUID / PK</span>
+          <span class="sf-note">Primary key from L1</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">name, country</span>
+          <span class="sf-type">VARCHAR</span>
+          <span class="sf-note">Display fields</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">latitude, longitude</span>
+          <span class="sf-type">DECIMAL</span>
+          <span class="sf-note">Required for State of Nature API lookups</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">biome_code</span>
+          <span class="sf-type">VARCHAR</span>
+          <span class="sf-note">TNFD biome classification (T1–T8, F1–F4, M1–M4)</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">activities</span>
+          <span class="sf-type">JSON[]</span>
+          <span class="sf-note">Array of {activity_id, sasb_isic_code, name}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE 2 -->
+    <div class="schema-block">
+      <div class="schema-header">
+        <span class="schema-table-name">site_encore_scores</span>
+        <span class="schema-desc">Populated by ENCORE API ingestion job — one row per site (MAX across activities)</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field">
+          <span class="sf-name pk">score_id</span>
+          <span class="sf-type">UUID / PK</span>
+          <span class="sf-note"></span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name fk">site_id</span>
+          <span class="sf-type">UUID / FK</span>
+          <span class="sf-note">→ sites.site_id</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">encore_refreshed_at</span>
+          <span class="sf-type">TIMESTAMP</span>
+          <span class="sf-note">Last sync from ENCORE</span>
+        </div>
+        <div class="schema-field" style="background:rgba(56,189,248,0.03)">
+          <span class="sf-name" style="color:var(--accent2); font-size:10px; text-transform:uppercase; letter-spacing:0.05em">— 12 Environmental Pressures —</span>
+          <span class="sf-type"></span>
+          <span class="sf-note">All: ENUM('VL','L','M','H','VH') — MAX across all site activities</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_freshwater_use</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Land &amp; Water Use Change category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_water_use</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Resource Use category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_land_use</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Land &amp; Water Use Change category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_toxic_emissions</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Pollution category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_non_ghg_air_pollution</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Pollution category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_nutrient_emissions</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Pollution category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_solid_waste</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Pollution category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_disturbances</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Other Pressures category</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">ep_overall_pressure_biodiversity</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">ENCORE computed — Species + Structural/Biotic Integrity max</span>
+        </div>
+        <div class="schema-field" style="background:rgba(74,222,128,0.03)">
+          <span class="sf-name" style="color:var(--accent); font-size:10px; text-transform:uppercase; letter-spacing:0.05em">— 25 Ecosystem Service Dependencies —</span>
+          <span class="sf-type"></span>
+          <span class="sf-note">All: ENUM('VL','L','M','H','VH') — MAX across all site activities</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_water_supply</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Provisioning</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_biomass_provisioning</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Provisioning</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_animal_based_energy</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Provisioning</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_genetic_material</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Provisioning</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_soil_sediment_retention</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_water_purification</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_water_flow_regulation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_solid_waste_remediation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_global_climate_regulation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_rainfall_pattern_regulation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_noise_attenuation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_pollination</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_nursery_population_maintenance</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_flood_control</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_storm_mitigation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_dilution_by_ecosystems</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_local_climate_regulation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_mediation_sensory_impacts</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_air_filtration</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_soil_quality_regulation</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_biological_control</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Regulating &amp; Maintenance</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_recreation_services</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Cultural</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_visual_amenity</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Cultural</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_education_scientific</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Cultural</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_spiritual_artistic</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Cultural</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">dep_overall_dependency_biodiversity</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">ENCORE computed — Species + Structural/Biotic Integrity max</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE 3 -->
+    <div class="schema-block">
+      <div class="schema-header">
+        <span class="schema-table-name">site_state_of_nature</span>
+        <span class="schema-desc">Populated by WRI Aqueduct + IBAT spatial lookups — one row per site</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field">
+          <span class="sf-name pk">son_id</span>
+          <span class="sf-type">UUID / PK</span>
+          <span class="sf-note"></span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name fk">site_id</span>
+          <span class="sf-type">UUID / FK</span>
+          <span class="sf-note">→ sites.site_id</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">water_scarcity_raw</span>
+          <span class="sf-type">DECIMAL</span>
+          <span class="sf-note">WRI Aqueduct baseline water stress score (0–5)</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">water_scarcity_level</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Bucketed: &lt;1=VL, 1–2=L, 2–3=M, 3–4=H, &gt;4=VH</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">land_degradation_level</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">From BII: &gt;80%=VL, 60–80%=L, 40–60%=M, 20–40%=H, &lt;20%=VH</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">water_pollution_level</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">Proxy from water quality index or BII for aquatic systems</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">msa_score</span>
+          <span class="sf-type">DECIMAL</span>
+          <span class="sf-note">Mean Species Abundance (0–1, from IBAT)</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">bii_score</span>
+          <span class="sf-type">DECIMAL</span>
+          <span class="sf-note">Biodiversity Intactness Index (0–1, from IBAT / PBF)</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">biodiversity_loss_level</span>
+          <span class="sf-type">ENUM</span>
+          <span class="sf-note">min(MSA, BII) bucketed using Nala's thresholds (see computed logic)</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">son_refreshed_at</span>
+          <span class="sf-type">TIMESTAMP</span>
+          <span class="sf-note">Last spatial data sync</span>
+        </div>
+        <div class="schema-field">
+          <span class="sf-name">data_confidence</span>
+          <span class="sf-type">ENUM('high','medium','low')</span>
+          <span class="sf-note">Data quality flag — affects UI display</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: COMPUTED LOGIC -->
+  <section id="computed">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Computed Logic</h2>
+    </div>
+
+    <p>All computed values are derived on-the-fly from the 3 tables above. Never store these — recompute on read to keep logic in one place.</p>
+
+    <h3>Step 1: Enum → Numeric Conversion</h3>
+    <p>Used throughout. Always apply this mapping before any arithmetic:</p>
+    <pre><code>VL = 1 | L = 2 | M = 3 | H = 4 | VH = 5</code></pre>
+
+    <h3>Step 2: Four Nature Impact Scores</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nature Impact</th>
+          <th>Environmental Pressure (EP)</th>
+          <th>State of Nature (SoN)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Increased Water Scarcity</strong></td>
+          <td><code>ep_water_use</code></td>
+          <td><code>water_scarcity_level</code></td>
+        </tr>
+        <tr>
+          <td><strong>Increased Water Pollution</strong></td>
+          <td><code>MAX(ep_toxic_emissions, ep_nutrient_emissions)</code></td>
+          <td><code>water_pollution_level</code></td>
+        </tr>
+        <tr>
+          <td><strong>Loss of Intact Natural Land</strong></td>
+          <td><code>ep_land_use</code></td>
+          <td><code>land_degradation_level</code></td>
+        </tr>
+        <tr>
+          <td><strong>Loss of Important Biodiversity</strong></td>
+          <td><code>ep_overall_pressure_biodiversity</code></td>
+          <td><code>biodiversity_loss_level</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Each Nature Impact has an <strong>Individual Impact Level</strong> = EP_numeric + SoN_numeric, then threshold:</p>
+    <pre><code>2 → VL  |  3–4 → L  |  5–6 → M  |  7–8 → H  |  9–10 → VH</code></pre>
+
+    <h3>Step 3: Overall Impact Score (Nala Formula)</h3>
+
+    <div class="formula">
+      <div class="formula-title">Impact Score Calculation</div>
+      <div class="formula-eq">
+        raw_sum = Σ (EP_i + SoN_i) across 4 Nature Impacts
+        <br><br>
+        impact_score = (raw_sum − 4) / (40 − 4) × 10
+      </div>
+      <div class="formula-vars">
+        <div class="formula-var">is_min = 4 &nbsp;&nbsp;(4 impacts × minimum numeric sum of 1+1=2... but baseline is actually 4 because VL+VL=2 per impact × 4 = 8; Nala uses 4 as minimum total EP score pre-SoN combination — use is_min=4 as stated)</div>
+        <div class="formula-var">is_max = 40 &nbsp;(4 impacts × VH+VH = 5+5=10 each × 4 = 40)</div>
+        <div class="formula-var">Output range: 0.0 → 10.0</div>
+      </div>
+    </div>
+
+    <h3>Step 4: Overall Impact Level</h3>
+    <pre><code>0.0 – 2.0  →  <span class="val">Very Low</span>
+2.0 – 4.0  →  <span class="val">Low</span>
+4.0 – 6.0  →  <span class="val">Moderate</span>
+6.0 – 8.0  →  <span class="val">High</span>
+8.0 – 10.0 →  <span class="val">Very High</span></code></pre>
+
+    <h3>Step 5: Biodiversity Loss Level (for SoN input)</h3>
+    <pre><code>min_score = MIN(msa_score, bii_score)   <span class="comment">// both in 0–1 range</span>
+
+min_score > 0.80  →  <span class="val">VL</span>  (Very Low Biodiversity Loss)
+min_score 0.60–0.80  →  <span class="val">L</span>
+min_score 0.40–0.60  →  <span class="val">M</span>
+min_score 0.20–0.40  →  <span class="val">H</span>
+min_score ≤ 0.20  →  <span class="val">VH</span>  (Very High Biodiversity Loss)</code></pre>
+
+    <h3>Step 6: Dependency Levels (3 categories)</h3>
+    <p>Each Dependency Level = matrix lookup of (ENCORE Dependency Rating) × (relevant SoN level):</p>
+
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>ENCORE Dep →<br>SoN Loss ↓</th>
+          <th><span class="badge badge-vl">VL</span></th>
+          <th><span class="badge badge-l">L</span></th>
+          <th><span class="badge badge-m">M</span></th>
+          <th><span class="badge badge-h">H</span></th>
+          <th><span class="badge badge-vh">VH</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-vl">VL Loss</span></td>
+          <td>VL</td><td>VL</td><td>VL</td><td>VL</td><td>L</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-l">L Loss</span></td>
+          <td>VL</td><td>VL</td><td>L</td><td>M</td><td>H</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-m">M Loss</span></td>
+          <td>VL</td><td>L</td><td>M</td><td>H</td><td>H</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-h">H Loss</span></td>
+          <td>L</td><td>M</td><td>H</td><td>H</td><td>VH</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-vh">VH Loss</span></td>
+          <td>M</td><td>H</td><td>H</td><td>VH</td><td>VH</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Apply this matrix for:</p>
+    <ul class="list">
+      <li><strong>Water Supply Dependency Level</strong> → dep_water_supply × water_scarcity_level</li>
+      <li><strong>Soil Retention Dependency Level</strong> → dep_soil_sediment_retention × land_degradation_level</li>
+      <li><strong>Overall Biodiversity Dependency Level</strong> → dep_overall_dependency_biodiversity × biodiversity_loss_level</li>
+    </ul>
+
+    <h3>Step 7: TNFD-Specific Derived Fields (our additions over Nala)</h3>
+    <pre><code><span class="comment">// Composite Priority Score for A3 triage (0–100)</span>
+composite_priority_score = (impact_score × 5) + (dependency_risk_score × 5)
+  where dependency_risk_score = MAX(water_dep_level, soil_dep_level, biodiv_dep_level) as numeric
+
+<span class="comment">// TNFD Priority Flag</span>
+tnfd_priority = (overall_impact_level IN ['Moderate','High','Very High'])
+             OR (any dependency_level IN ['High','Very High'])
+
+<span class="comment">// Priority Tier for A3</span>
+Tier 1: composite_priority_score > 75
+Tier 2: composite_priority_score 50–75
+Tier 3: composite_priority_score < 50</code></pre>
+
+  </section>
+
+  <!-- SECTION 6: DATA SOURCES -->
+  <section id="datasources">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Data Sources &amp; Integration</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>What it provides</th>
+          <th>Integration method</th>
+          <th>Refresh cadence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ENCORE API</strong></td>
+          <td>12 pressures + 25 dependencies per SASB×Biome combination. Overall Pressure on Biodiversity. Overall Dependency on Biodiversity.</td>
+          <td>REST API. Key: <code>{sasb_isic_code, biome_code}</code>. Aggregate MAX per site across activities.</td>
+          <td>On site onboarding + activity edit</td>
+        </tr>
+        <tr>
+          <td><strong>WRI Aqueduct</strong></td>
+          <td>Baseline Water Stress score (0–5) per location</td>
+          <td>REST API or GeoJSON spatial join. Key: <code>{lat, lng}</code> → nearest watershed polygon</td>
+          <td>Annually (dataset updates ~yearly)</td>
+        </tr>
+        <tr>
+          <td><strong>IBAT / Planet Biodiversity Framework</strong></td>
+          <td>MSA + BII scores per location</td>
+          <td>API (requires license) or pre-loaded global raster. Key: <code>{lat, lng}</code></td>
+          <td>Annually</td>
+        </tr>
+        <tr>
+          <td><strong>L1 Site Inventory</strong></td>
+          <td>Site metadata, activities, lat/lng</td>
+          <td>Internal DB — already exists</td>
+          <td>On edit</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <p><strong>Phase 1 (MVP):</strong> Use WRI Aqueduct CSV + IBAT static raster as manual lookup tables if API access isn't ready. The data model stays identical — just swap the ingestion job for a CSV import script. Don't block UI development on API access.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 7: UI VIEWS SPEC -->
+  <section id="views">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>UI Views Specification</h2>
+    </div>
+
+    <!-- SCREEN 1 -->
+    <h3>Screen 1: Portfolio Dashboard</h3>
+    <p>Entry point for the module. Portfolio-level summary, no site selection required.</p>
+
+    <h4>KPI Strip (4 cards)</h4>
+    <table>
+      <thead><tr><th>KPI Label</th><th>Value Logic</th><th>Click Action</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Analysed Sites</strong></td>
+          <td><code>COUNT(sites with ENCORE scores) / COUNT(all sites)</code></td>
+          <td>Opens All Sites list filtered to unanalysed</td>
+        </tr>
+        <tr>
+          <td><strong>Top Pressure</strong></td>
+          <td>The pressure name with highest average numeric rating across all sites</td>
+          <td>Opens dashboard with that pressure highlighted in bar chart</td>
+        </tr>
+        <tr>
+          <td><strong>Top Dependency</strong></td>
+          <td>The dependency with highest average numeric rating across all sites</td>
+          <td>Same, for dependencies tab</td>
+        </tr>
+        <tr>
+          <td><strong>TNFD Priority Sites</strong> <em>(our version of Nala's "CSRD Material")</em></td>
+          <td><code>COUNT(tnfd_priority = true)</code></td>
+          <td>Opens All Sites filtered to priority = true</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Environmental Pressures &amp; Dependencies Bar Chart</h4>
+    <ul class="list">
+      <li>Toggle: <strong>Pressures</strong> | <strong>Dependencies</strong></li>
+      <li>Y-axis: list of top 5 most material pressures/dependencies (ranked by count of H+VH sites)</li>
+      <li>X-axis: each bar = stacked horizontal bar showing count of sites at each level (VL/L/M/H/VH)</li>
+      <li>Color: VL=green → VH=red. Use the color constants from this document.</li>
+      <li>Clicking a bar segment filters All Sites list to matching sites</li>
+    </ul>
+
+    <h4>Overall Impact Level Donut Chart</h4>
+    <ul class="list">
+      <li>5 segments: VL / L / Moderate / H / VH, count + percentage per segment</li>
+      <li>Center: total site count</li>
+      <li>Data source: <code>overall_impact_level</code> computed per site</li>
+      <li>Clicking a segment filters All Sites list</li>
+    </ul>
+
+    <h4>Impacts &amp; Dependencies Map</h4>
+    <ul class="list">
+      <li>Mapbox GL JS or Leaflet — clustered markers</li>
+      <li>Marker color = <code>overall_impact_level</code> (VL=green → VH=red)</li>
+      <li>Cluster numbers = site count in cluster</li>
+      <li>Click marker → navigate to Site: Impacts tab for that site</li>
+      <li>Full-screen expand option</li>
+    </ul>
+
+    <h4>Top Priority Sites List</h4>
+    <ul class="list">
+      <li>Sorted by <code>composite_priority_score DESC</code>, show top 5</li>
+      <li>Each row: site name, location, activity category, overall impact level badge</li>
+      <li>Click → navigates to that site's detail view</li>
+      <li>"View all" → All Sites list sorted by priority</li>
+    </ul>
+
+    <hr class="divider">
+
+    <!-- SCREEN 2 -->
+    <h3>Screen 2: All Sites List</h3>
+    <p>Filterable, sortable table. The "control center" for analysts working through sites.</p>
+
+    <h4>Table Columns</h4>
+    <table>
+      <thead><tr><th>Column</th><th>Data</th><th>Display</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Site</strong></td><td>name + country</td><td>Text, clickable → site view</td></tr>
+        <tr><td><strong>Activity</strong></td><td>activity name + ISIC sector</td><td>Text (show max-risk activity if multiple)</td></tr>
+        <tr><td><strong>TNFD Priority</strong></td><td><code>tnfd_priority</code></td><td>Badge: "Priority" (amber) | "Not priority" (muted)</td></tr>
+        <tr><td><strong>Impact Level</strong></td><td><code>overall_impact_level</code></td><td>Colored badge VL → VH</td></tr>
+        <tr><td><strong>Pressures (5 icons)</strong></td><td>Water Use, Land Use, Toxic Emissions, Solid Waste, Disturbances</td><td>Icon + colored VL/L/M/H/VH chip per pressure</td></tr>
+        <tr><td><strong>Dependencies (5 icons)</strong></td><td>Water Supply, Soil Retention, Pollination, Flood Control, Biomass</td><td>Icon + colored chip</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Filters</h4>
+    <ul class="list">
+      <li>Search by site name</li>
+      <li>Filter: TNFD Priority (yes/no)</li>
+      <li>Filter: Overall Impact Level (multiselect VL/L/M/H/VH)</li>
+      <li>Filter: Country</li>
+      <li>Sort by: Impact Score, Priority Score, Site Name</li>
+    </ul>
+
+    <hr class="divider">
+
+    <!-- SCREEN 3 -->
+    <h3>Screen 3: Site Detail — Impacts Tab</h3>
+    <p>Mirrors Nala's site impact view. Two sections: Environmental Pressures cards, then Impact Level table.</p>
+
+    <h4>Environmental Pressures Section</h4>
+    <ul class="list">
+      <li>4 category groups: Land &amp; Water Use Change | Resource Use | Pollution | Other Pressures</li>
+      <li>Each pressure = label + colored badge (VL–VH) + info tooltip (ENCORE explanation text)</li>
+      <li>Toggle: "Hide undetected pressures" (hide pressures rated VL that ENCORE doesn't associate with the activity)</li>
+      <li>If multiple activities: show MAX across activities, note "aggregated from N activities" in subtitle</li>
+    </ul>
+
+    <h4>Overall Pressure on Biodiversity</h4>
+    <ul class="list">
+      <li>Separate highlighted card showing <code>ep_overall_pressure_biodiversity</code></li>
+      <li>Tooltip: explain ENCORE's Species + Structural/Biotic Integrity methodology</li>
+    </ul>
+
+    <h4>Impact Level Table</h4>
+    <table>
+      <thead><tr><th>Column</th><th>Content</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nature Impact</strong></td><td>Water Scarcity / Water Pollution / Loss of Natural Land / Loss of Biodiversity</td></tr>
+        <tr><td><strong>Impact Level</strong></td><td>Colored badge (individual impact level = EP + SoN combined)</td></tr>
+        <tr><td><strong>State of Nature</strong></td><td>Label (e.g., "Water Scarcity") + SoN rating badge</td></tr>
+        <tr><td><strong>+ Environmental Pressure</strong></td><td>Label (e.g., "Water Use") + EP rating badge</td></tr>
+      </tbody>
+    </table>
+
+    <p>Show <strong>Overall Impact Score (X.X / 10)</strong> prominently as a progress bar above the table, with the Overall Impact Level badge (Very Low → Very High).</p>
+
+    <hr class="divider">
+
+    <!-- SCREEN 4 -->
+    <h3>Screen 4: Site Detail — Dependencies Tab</h3>
+
+    <h4>Dependency on Ecosystem Services Section</h4>
+    <ul class="list">
+      <li>3 category groups: Provisioning | Regulating &amp; Maintenance | Cultural</li>
+      <li>Each service = label + colored badge + info tooltip</li>
+      <li>Toggle: "Hide undetected dependencies"</li>
+      <li>Same MAX aggregation logic as Impacts tab</li>
+    </ul>
+
+    <h4>Overall Dependency on Biodiversity</h4>
+    <ul class="list">
+      <li>Highlighted card for <code>dep_overall_dependency_biodiversity</code></li>
+    </ul>
+
+    <h4>Dependency Level Table</h4>
+    <table>
+      <thead><tr><th>Column</th><th>Content</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nature Dependency</strong></td><td>Water Supply / Soil Retention / Overall Biodiversity</td></tr>
+        <tr><td><strong>Dependency Level</strong></td><td>Colored badge (from matrix lookup)</td></tr>
+        <tr><td><strong>State of Nature</strong></td><td>Relevant SoN label + rating</td></tr>
+        <tr><td><strong>+ Dependency</strong></td><td>ENCORE dependency rating</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION 8: BEYOND NALA -->
+  <section id="beyond">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Beyond Nala — TNFD-Native Additions</h2>
+    </div>
+
+    <p>These are features Nala doesn't have. Build them from day one — they are what make this a TNFD tool, not just a CSRD tool.</p>
+
+    <h3>Addition 1: TNFD Priority Tier Badge (not CSRD Materiality)</h3>
+    <p>Replace Nala's "CSRD Expected/Not Expected" badge with a TNFD Priority Tier (1/2/3) derived from the Composite Priority Score. This directly feeds A3 and is the output financial analysts actually need.</p>
+
+    <h3>Addition 2: A3 Handoff Card</h3>
+    <p>On the site detail view, after the Impact Level table, show a "Risk Pathway" section: a collapsible panel that maps the site's Impact Level and Dependency Levels to TNFD risk categories (Physical Risk, Transition Risk, Systemic Risk) and shows which A3 risk pathways to investigate next. This is the explicit LEAP bridge Nala is missing.</p>
+
+    <h3>Addition 3: Composite Priority Score</h3>
+    <p>A single 0–100 number combining Impact Score and Dependency Risk. Shown on the All Sites list as a sortable column. Enables instant triage without reading individual ratings. Nala shows impact level separately from dependency level with no combined score.</p>
+
+    <h3>Addition 4: Data Confidence Indicator</h3>
+    <p>Show a small data quality flag (High/Medium/Low) on each State of Nature input, based on data source resolution. When confidence is Low, show a tooltip explaining what data was used as a proxy. This is critical for TNFD disclosure documentation and builds user trust in the methodology.</p>
+
+    <h3>Addition 5: ENCORE Attribution Block</h3>
+    <p>Automated, always-visible ENCORE attribution on every screen that uses ENCORE data (required by CC BY-SA 4.0 license). Include DOI link.</p>
+  </section>
+
+  <!-- SECTION 9: KANBAN CARDS -->
+  <section id="kanban">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2>Kanban Cards — 7 Shippable Tasks</h2>
+    </div>
+
+    <p>Each card is independently shippable. Backend (BE) cards must precede their paired Frontend (FE) card, but FE cards can be built in parallel using mock data.</p>
+
+    <!-- CARD 1 -->
+    <div class="kanban-card data">
+      <div class="kanban-header">
+        <span class="kanban-id">IMP-001</span>
+        <div class="kanban-tags">
+          <span class="tag-pill tag-data">Data</span>
+          <span class="tag-pill tag-p1">Priority 1</span>
+        </div>
+      </div>
+      <div class="kanban-title">ENCORE API Integration &amp; site_encore_scores Ingestion</div>
+      <div class="kanban-desc">Build the ingestion pipeline that queries ENCORE for each site's activities (SASB×Biome) and populates site_encore_scores with MAX aggregation across activities.</div>
+      <ul class="kanban-tasks">
+        <li>Create <code>site_encore_scores</code> table (schema in Section 04)</li>
+        <li>ENCORE API client: GET /pressures and /dependencies by SASB code + biome</li>
+        <li>MAX aggregation logic when site has multiple activities</li>
+        <li>Trigger: run on site creation, activity edit, and manual refresh</li>
+        <li>Add ENCORE attribution metadata to each record (CC BY-SA 4.0)</li>
+      </ul>
+      <div class="kanban-footer">
+        <span>Depends on: L1 site inventory, ENCORE API key</span>
+        <span>Est: 3–5 days</span>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="kanban-card data">
+      <div class="kanban-header">
+        <span class="kanban-id">IMP-002</span>
+        <div class="kanban-tags">
+          <span class="tag-pill tag-data">Data</span>
+          <span class="tag-pill tag-p1">Priority 1</span>
+        </div>
+      </div>
+      <div class="kanban-title">State of Nature Data Ingestion (WRI + IBAT)</div>
+      <div class="kanban-desc">Spatial lookup pipeline that takes each site's lat/lng and populates site_state_of_nature with water stress, BII, and MSA scores.</div>
+      <ul class="kanban-tasks">
+        <li>Create <code>site_state_of_nature</code> table (schema in Section 04)</li>
+        <li>WRI Aqueduct API (or CSV): lookup baseline water stress by lat/lng</li>
+        <li>IBAT API (or pre-loaded raster): lookup MSA + BII by lat/lng</li>
+        <li>Apply bucketing formulas for level enums (see Section 05)</li>
+        <li>Set data_confidence based on data source resolution</li>
+        <li>MVP fallback: manual CSV import if API access delayed</li>
+      </ul>
+      <div class="kanban-footer">
+        <span>Depends on: WRI Aqueduct access, IBAT license</span>
+        <span>Est: 3–4 days</span>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="kanban-card be">
+      <div class="kanban-header">
+        <span class="kanban-id">IMP-003</span>
+        <div class="kanban-tags">
+          <span class="tag-pill tag-be">Backend</span>
+          <span class="tag-pill tag-p1">Priority 1</span>
+        </div>
+      </div>
+      <div class="kanban-title">Computed Fields API Endpoint</div>
+      <div class="kanban-desc">A single API endpoint (or computed DB view) that takes site_id and returns all derived values: impact scores, dependency levels, priority tier, TNFD flags.</div>
+      <ul class="kanban-tasks">
+        <li>Implement enum→numeric conversion helper (VL=1…VH=5)</li>
+        <li>Compute 4 individual nature impact levels per site</li>
+        <li>Compute overall impact score (Nala formula) and overall_impact_level</li>
+        <li>Compute 3 dependency levels using matrix lookup (Section 05)</li>
+        <li>Compute composite_priority_score and priority_tier</li>
+        <li>Expose as: GET /api/sites/:id/impact-dependency-summary</li>
+        <li>Expose as: GET /api/portfolio/impact-dependency-overview (for dashboard)</li>
+      </ul>
+      <div class="kanban-footer">
+        <span>Depends on: IMP-001, IMP-002</span>
+        <span>Est: 2–3 days</span>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="kanban-card fe">
+      <div class="kanban-header">
+        <span class="kanban-id">IMP-004</span>
+        <div class="kanban-tags">
+          <span class="tag-pill tag-fe">Frontend</span>
+          <span class="tag-pill tag-p1">Priority 1</span>
+        </div>
+      </div>
+      <div class="kanban-title">Portfolio Dashboard Screen</div>
+      <div class="kanban-desc">The main Impacts &amp; Dependencies dashboard. KPI strip, bar charts, impact donut, world map, top sites list.</div>
+      <ul class="kanban-tasks">
+        <li>4-card KPI strip (Analysed Sites, Top Pressure, Top Dependency, TNFD Priority Count)</li>
+        <li>Horizontal stacked bar chart — Pressures/Dependencies toggle (5 bars each)</li>
+        <li>Impact Level donut chart with legend (VL/L/M/H/VH counts + %)</li>
+        <li>Interactive world map (clustered markers, color = impact level)</li>
+        <li>Top 5 Priority Sites list (sorted by composite_priority_score)</li>
+        <li>ENCORE attribution footer</li>
+      </ul>
+      <div class="kanban-footer">
+        <span>Depends on: IMP-003 (or mock data for parallel dev)</span>
+        <span>Est: 3–4 days</span>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="kanban-card fe">
+      <div class="kanban-header">
+        <span class="kanban-id">IMP-005</span>
+        <div class="kanban-tags">
+          <span class="tag-pill tag-fe">Frontend</span>
+          <span class="tag-pill tag-p2">Priority 2</span>
+        </div>
+      </div>
+      <div class="kanban-title">All Sites List Screen</div>
+      <div class="kanban-desc">Filterable, sortable table of all sites with TNFD Priority flag, impact level, and key pressure/dependency icon-badges.</div>
+      <ul class="kanban-tasks">
+        <li>Table: Site | Activity | TNFD Priority | Impact Level | 5 Pressure chips | 5 Dependency chips</li>
+        <li>Search, filter, sort controls (see Section 07)</li>
+        <li>Click row → navigates to site detail view</li>
+        <li>Pagination</li>
+      </ul>
+      <div class="kanban-footer">
+        <span>Depends on: IMP-003</span>
+        <span>Est: 2–3 days</span>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="kanban-card fe">
+      <div class="kanban-header">
+        <span class="kanban-id">IMP-006</span>
+        <div class="kanban-tags">
+          <span class="tag-pill tag-fe">Frontend</span>
+          <span class="tag-pill tag-p2">Priority 2</span>
+        </div>
+      </div>
+      <div class="kanban-title">Site Detail: Impacts Tab</div>
+      <div class="kanban-desc">Site-level impact view. 12 pressure cards grouped by category, overall biodiversity pressure card, and Impact Level table showing SoN + EP breakdown per Nature Impact.</div>
+      <ul class="kanban-tasks">
+        <li>12 pressure cards in 4 groups with icon + rating badge + tooltip</li>
+        <li>"Hide undetected pressures" toggle</li>
+        <li>Overall Pressure on Biodiversity highlight card</li>
+        <li>Overall Impact Score progress bar (X.X / 10) + level badge</li>
+        <li>Impact Level table: 4 rows (Water Scarcity / Pollution / Land / Biodiversity)</li>
+        <li>Each row: impact level badge = SoN badge + EP badge</li>
+        <li>A3 Risk Pathway handoff panel (TNFD addition — collapsible)</li>
+        <li>Data confidence indicators on SoN fields</li>
+      </ul>
+      <div class="kanban-footer">
+        <span>Depends on: IMP-003</span>
+        <span>Est: 3–4 days</span>
+      </div>
+    </div>
+
+    <!-- CARD 7 -->
+    <div class="kanban-card fe">
+      <div class="kanban-header">
+        <span class="kanban-id">IMP-007</span>
+        <div class="kanban-tags">
+          <span class="tag-pill tag-fe">Frontend</span>
+          <span class="tag-pill tag-p2">Priority 2</span>
+        </div>
+      </div>
+      <div class="kanban-title">Site Detail: Dependencies Tab</div>
+      <div class="kanban-desc">Site-level dependency view. 25 ecosystem service dependency cards grouped by type, and Dependency Level table for 3 categories.</div>
+      <ul class="kanban-tasks">
+        <li>25 dependency cards in 3 groups (Provisioning / Regulating / Cultural)</li>
+        <li>"Hide undetected dependencies" toggle</li>
+        <li>Overall Dependency on Biodiversity highlight card</li>
+        <li>Dependency Level table: 3 rows (Water / Soil / Biodiversity)</li>
+        <li>Each row: dependency level badge = SoN badge + ENCORE dependency badge</li>
+        <li>Link to A3: "This dependency is a potential transition risk — assess in Phase 4"</li>
+      </ul>
+      <div class="kanban-footer">
+        <span>Depends on: IMP-003</span>
+        <span>Est: 2–3 days</span>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <p><strong>Parallel development path:</strong> IMP-001 and IMP-002 can run in parallel. IMP-004 through IMP-007 can all be built simultaneously using a shared mock data JSON fixture — don't wait for backend to start UI work.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 10: HANDOVER CHECKLIST -->
+  <section id="handover">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2>Handover Checklist</h2>
+    </div>
+
+    <p>Everything someone needs to start building Day 1, without asking a single clarifying question.</p>
+
+    <h4>Decisions Already Made (don't revisit)</h4>
+    <table>
+      <thead><tr><th>Decision</th><th>Choice</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Primary framework</td><td>TNFD LEAP (not CSRD)</td><td>Our differentiation from Nala</td></tr>
+        <tr><td>Impact methodology</td><td>Nala's formula exactly (EP + SoN, normalized 0–10)</td><td>Defensible, documented, CSRD-compatible</td></tr>
+        <tr><td>Dependency methodology</td><td>ENCORE dep × SoN matrix (Section 05)</td><td>Nala-validated approach</td></tr>
+        <tr><td>GHG Emissions pressure</td><td>Excluded from this module</td><td>Routes to TCFD; prevents double-counting</td></tr>
+        <tr><td>Multi-activity aggregation</td><td>MAX per pressure/dependency across activities</td><td>Conservative; matches Nala</td></tr>
+        <tr><td>ENCORE attribution</td><td>CC BY-SA 4.0 — must be visible on all screens using ENCORE data</td><td>License requirement</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Open Questions (resolve before sprint start)</h4>
+    <table>
+      <thead><tr><th>#</th><th>Question</th><th>Who decides</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Do we have IBAT API access or should Phase 1 use PBF static dataset?</td><td>Product lead</td></tr>
+        <tr><td>2</td><td>Should "TNFD Priority" replace or sit alongside CSRD materiality flag?</td><td>Product lead</td></tr>
+        <tr><td>3</td><td>What is the water_pollution_level source for MVP? (WRI doesn't provide this directly)</td><td>Data team</td></tr>
+        <tr><td>4</td><td>Should users be able to manually override computed impact levels at site level (like Nala allows for CSRD)?</td><td>Product lead</td></tr>
+        <tr><td>5</td><td>Which map library — Mapbox GL (requires API key) or Leaflet (free)?</td><td>Engineering</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Mock Data Requirements (for parallel FE development)</h4>
+    <pre><code><span class="comment">// Create a JSON fixture with at least 10 sites covering all Impact Level tiers</span>
+<span class="comment">// Include at least:</span>
+2 × Very Low impact sites   (different biomes)
+3 × Low impact sites
+2 × Moderate impact sites
+2 × High impact sites
+1 × Very High impact site   (with VH on multiple categories)
+
+<span class="comment">// Each site must have:</span>
+- All 12 ep_ fields populated
+- All 25 dep_ fields populated
+- All site_state_of_nature fields populated
+- All computed fields pre-calculated</code></pre>
+
+    <h4>Definition of Done (per Kanban card)</h4>
+    <ul class="list">
+      <li>IMP-001 / 002: Ingestion job runs end-to-end on 5 real test sites without error. Data matches ENCORE website output for same SASB+biome combination.</li>
+      <li>IMP-003: API returns correct overall_impact_level for the Alpena Cement Plant example from Nala (verified against screenshot values)</li>
+      <li>IMP-004: Dashboard matches the KPI values of IMP-003 API. All chart interactions navigate correctly.</li>
+      <li>IMP-005/006/007: Site view matches expected output for at least 3 test sites verified against Nala methodology documentation</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>Verification test:</strong> Take Nala's Alpena Cement Plant site (Michigan, USA). Its activities are "Manufacture of non-metallic mineral products [C_23_239]". Run our pipeline. The computed values should align directionally with Nala's screenshot (Toxic Emissions = VH, Impact Score = 5.0/10, Water Pollution Impact = High). If they match, the implementation is correct.</p>
+    </div>
+
+    <hr class="divider">
+
+    <h4>File Deliverables in This Handover</h4>
+    <table>
+      <thead><tr><th>File</th><th>Contents</th></tr></thead>
+      <tbody>
+        <tr><td><strong>This PRD</strong></td><td>Full product spec, data model, computed logic, UI spec, Kanban cards</td></tr>
+        <tr><td><code>encore_reference.csv</code></td><td>ENCORE pressures + dependencies lookup table (SASB × Biome → ratings) — to be generated from ENCORE website / API</td></tr>
+        <tr><td><code>mock_data.json</code></td><td>10 fully populated test sites for frontend development — to be created by data team using this spec</td></tr>
+        <tr><td><code>dependency_matrix.json</code></td><td>The 5×5 Dependency Level matrix from Section 05, as machine-readable JSON for backend implementation</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<script>
+  // Smooth scroll + active nav
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        e.preventDefault();
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      }
+    });
+  });
+
+  // Highlight active section on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item[href]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navItems.forEach(i => {
+      i.classList.toggle('active', i.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
