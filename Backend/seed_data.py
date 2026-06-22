@@ -13,18 +13,13 @@ from difflib import SequenceMatcher
 def similarity(a, b):
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
-def seed_data():
-    # Drop problematic tables from old schema manually if they exist
-    with engine.connect() as conn:
-        conn.execute(text("DROP TABLE IF EXISTS site_state_of_nature CASCADE"))
-        conn.commit()
+def check_and_seed_data(db: Session):
+    # Check if we already have seeded data
+    if db.query(IndustryLeapData).first() is not None:
+        print("IndustryLeapData already seeded. Skipping auto-seed.")
+        return
 
-    # Drop all and recreate
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    
-    db: Session = SessionLocal()
-
+    print("Auto-seeding IndustryLeapData...")
     # Get paths relative to this script
     backend_dir = os.path.dirname(os.path.abspath(__file__))
     dep_csv_path = os.path.join(backend_dir, "ENCORE dependency materialities.csv")
@@ -137,6 +132,22 @@ def seed_data():
 
     db.commit()
     print("Seeding completed successfully.")
+
+def seed_data():
+    # Drop problematic tables from old schema manually if they exist
+    with engine.connect() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS site_state_of_nature CASCADE"))
+        conn.commit()
+
+    # Drop all and recreate
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    
+    db: Session = SessionLocal()
+    try:
+        check_and_seed_data(db)
+    finally:
+        db.close()
 
 if __name__ == "__main__":
     seed_data()

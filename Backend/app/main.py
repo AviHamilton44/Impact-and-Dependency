@@ -1,10 +1,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import engine, Base
+from app.database import engine, Base, SessionLocal
+from seed_data import check_and_seed_data
 from app.routers import portfolio, sites, upload
 
 # Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
+
+# Auto-seed ENCORE dataset if empty
+db = SessionLocal()
+try:
+    check_and_seed_data(db)
+except Exception as e:
+    print(f"Error during auto-seeding: {e}")
+finally:
+    db.close()
 
 app = FastAPI(title="TNFD Impacts & Dependencies API")
 
