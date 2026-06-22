@@ -11,4 +11,6 @@ httpx
 openpyxl
 gunicorn
 python-multipart
+python-dotenv
+
 
