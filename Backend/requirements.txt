@@ -8,4 +8,7 @@ geopandas
 fastkml
 alembic
 httpx
+openpyxl
+gunicorn
 python-multipart
+
