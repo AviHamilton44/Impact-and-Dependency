@@ -38,7 +38,12 @@ def check_and_seed_data(db: Session):
 
     # Load Excel justifications mapping
     print("Loading Excel justifications...")
-    df_xlsx = pd.read_excel(xlsx_path, header=None)
+    try:
+        df_xlsx = pd.read_excel(xlsx_path, header=None)
+    except Exception as e:
+        print(f"Error reading Excel file: {e}")
+        return
+
     headers = [str(x).strip() for x in df_xlsx.iloc[1]]
     process_rows = {}
     for idx, row in df_xlsx.iloc[2:].iterrows():
@@ -69,7 +74,11 @@ def check_and_seed_data(db: Session):
     # 1. Seed IndustryLeapData (Dependencies)
     print("Seeding IndustryLeapData (Dependencies)...")
     try:
-        df_dep = pd.read_csv(dep_csv_path)
+        try:
+            df_dep = pd.read_csv(dep_csv_path, encoding='utf-8')
+        except UnicodeDecodeError:
+            df_dep = pd.read_csv(dep_csv_path, encoding='latin-1')
+
         for _, row in df_dep.iterrows():
             process_val = str(row.get('Process', '')).strip()
             service_val = str(row.get('Ecosystem Service', '')).strip()
@@ -102,7 +111,11 @@ def check_and_seed_data(db: Session):
     # 2. Seed IndustryLeapData (Impacts)
     print("Seeding IndustryLeapData (Impacts)...")
     try:
-        df_imp = pd.read_csv(imp_csv_path)
+        try:
+            df_imp = pd.read_csv(imp_csv_path, encoding='utf-8')
+        except UnicodeDecodeError:
+            df_imp = pd.read_csv(imp_csv_path, encoding='latin-1')
+
         for _, row in df_imp.iterrows():
             process_val = str(row.get('Production process', '')).strip()
             driver_val = str(row.get('Impact driver', '')).strip()
