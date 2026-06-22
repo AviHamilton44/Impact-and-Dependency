@@ -101,7 +101,9 @@ def get_portfolio_overview(db: Session = Depends(get_db)):
     dependency_totals = {
         "Water Supply": 0.0,
         "Soil Retention": 0.0,
-        "Biodiversity Regulation": 0.0
+        "Biodiversity Regulation": 0.0,
+        "Climate Regulation": 0.0,
+        "Pollination": 0.0
     }
     
     overall_impact_counts = {"VL": 0, "L": 0, "M": 0, "H": 0, "VH": 0}
@@ -121,9 +123,11 @@ def get_portfolio_overview(db: Session = Depends(get_db)):
             impact_totals["Species Populations"] += ib["population"]["score"] / 2.0
             impact_totals["Extinction Risk"] += ib["extinction"]["score"] / 2.0
             
-            dependency_totals["Water Supply"] += enum_to_num(db_breakdown["water"])
-            dependency_totals["Soil Retention"] += enum_to_num(db_breakdown["soil"])
-            dependency_totals["Biodiversity Regulation"] += enum_to_num(db_breakdown["biodiversity"])
+            dependency_totals["Water Supply"] += enum_to_num(db_breakdown.get("water", "VL"))
+            dependency_totals["Soil Retention"] += enum_to_num(db_breakdown.get("soil", "VL"))
+            dependency_totals["Biodiversity Regulation"] += enum_to_num(db_breakdown.get("biodiversity", "VL"))
+            dependency_totals["Climate Regulation"] += enum_to_num(db_breakdown.get("climate", "VL"))
+            dependency_totals["Pollination"] += enum_to_num(db_breakdown.get("pollination", "VL"))
             
             overall_impact_counts[out["impact_level"]] += 1
             overall_dep_counts[out["dependency_risk_level"]] += 1

@@ -14,6 +14,7 @@ def get_encore_scores_for_activities(db: Session, activity_names: List[str]) -> 
         "Water pollutants": "ep_nutrient_emissions",
         "Disturbances": "ep_disturbances",
         "Air pollutants": "ep_non_ghg_air_pollution",
+        "Non-GHG air pollutants": "ep_non_ghg_air_pollution",
         "Terrestrial ecosystem use": "ep_land_use",
         "GHG emissions": "ep_ghg_emissions",
         "Solid waste": "ep_solid_waste",
@@ -24,8 +25,13 @@ def get_encore_scores_for_activities(db: Session, activity_names: List[str]) -> 
     # Mapping of dependency_type to Dependency fields
     DEP_MAP = {
         "Water supply": "dep_water_supply",
+        "Surface water": "dep_water_supply",
+        "Ground water": "dep_water_supply",
         "Soil sediment retention": "dep_soil_sediment_retention",
+        "Mass stabilisation and erosion control": "dep_soil_sediment_retention",
+        "Soil quality": "dep_soil_sediment_retention",
         "Biodiversity": "dep_overall_dependency_biodiversity",
+        "Maintain nursery habitats": "dep_overall_dependency_biodiversity",
         "Flood and storm protection": "dep_flood_and_storm_protection",
         "Pollination": "dep_pollination",
         "Pest control": "dep_pest_control",
@@ -41,7 +47,7 @@ def get_encore_scores_for_activities(db: Session, activity_names: List[str]) -> 
         "dep_flood_and_storm_protection", "dep_pollination", "dep_pest_control", "dep_climate_regulation"
     ]}
     
-    rating_rank = {"VL": 1, "L": 2, "M": 3, "H": 4, "VH": 5}
+    rating_rank = {"VL": 1, "L": 2, "M": 3, "H": 4, "VH": 5, "ND": 1}
     rank_rating = {1: "VL", 2: "L", 3: "M", 4: "H", 5: "VH"}
 
     for activity in activity_names:
@@ -56,7 +62,7 @@ def get_encore_scores_for_activities(db: Session, activity_names: List[str]) -> 
                     scores[field] = rank_rating[new_rank]
             
             # Special case for overall biodiversity pressure (often GHG or Land Use)
-            if row.impact_driver == "GHG emissions":
+            if row.impact_driver in ["GHG emissions", "Terrestrial ecosystem use"]:
                 field = "ep_overall_pressure_biodiversity"
                 current_rank = rating_rank.get(scores[field], 1)
                 new_rank = rating_rank.get(row.impact_rating, 1)
@@ -70,5 +76,6 @@ def get_encore_scores_for_activities(db: Session, activity_names: List[str]) -> 
                 new_rank = rating_rank.get(row.severity, 1) # severity is the rating for dependencies
                 if new_rank > current_rank:
                     scores[field] = rank_rating[new_rank]
+
                     
     return scores

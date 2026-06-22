@@ -86,4 +86,6 @@ class IndustryLeapData(Base):
     impact_driver = Column(String)
     severity = Column(String)
     impact_rating = Column(String)
+    justification = Column(String)
+
 

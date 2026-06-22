@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
-from app.models.models import Site, SiteEncoreScore, SiteSonScore
+from app.models.models import Site, SiteEncoreScore, SiteSonScore, IndustryLeapData
 from app.services.computation_service import calculate_tnfd_outputs
 import uuid
 from typing import List, Dict, Any
@@ -56,6 +56,45 @@ def get_site_detail(site_id: uuid.UUID, db: Session = Depends(get_db)):
     if site.encore_score and site.son_score:
         out = calculate_tnfd_outputs(site, site.encore_score, site.son_score)
         
+    # Fetch all ENCORE data for the site's activities
+    top_impacts = []
+    top_dependencies = []
+    if site.activities:
+        records = db.query(IndustryLeapData).filter(IndustryLeapData.activity_name.in_(site.activities)).all()
+        rating_rank = {"VL": 1, "L": 2, "M": 3, "H": 4, "VH": 5}
+        
+        # Aggregated impacts
+        impacts_dict = {}
+        for r in records:
+            if r.impact_driver and r.impact_rating and r.impact_rating != 'ND':
+                driver = r.impact_driver
+                rating = r.impact_rating
+                if driver not in impacts_dict or rating_rank.get(rating, 0) > rating_rank.get(impacts_dict[driver], 0):
+                    impacts_dict[driver] = rating
+        sorted_impacts = sorted(
+            [{"impact_driver": k, "rating": v} for k, v in impacts_dict.items()],
+            key=lambda x: (-rating_rank.get(x["rating"], 0), x["impact_driver"])
+        )
+        top_impacts = sorted_impacts[:5]
+        
+        # Aggregated dependencies
+        deps_dict = {}
+        for r in records:
+            if r.ecosystem_service and r.severity and r.severity != 'ND':
+                service = r.ecosystem_service
+                rating = r.severity
+                just = r.justification or ""
+                if service not in deps_dict or rating_rank.get(rating, 0) > rating_rank.get(deps_dict[service]["rating"], 0):
+                    deps_dict[service] = {"rating": rating, "justification": just}
+        sorted_deps = sorted(
+            [{"ecosystem_service": k, "rating": v["rating"], "justification": v["justification"]} for k, v in deps_dict.items()],
+            key=lambda x: (-rating_rank.get(x["rating"], 0), x["ecosystem_service"])
+        )
+        top_dependencies = sorted_deps[:5]
+
+    out["top_impacts"] = top_impacts
+    out["top_dependencies"] = top_dependencies
+        
     return {
         "metadata": {
             "site_id": site.site_id,
@@ -68,6 +107,7 @@ def get_site_detail(site_id: uuid.UUID, db: Session = Depends(get_db)):
         },
         "analysis": out
     }
+
 
 @router.get("/sites/{site_id}/impact-dependency-summary")
 def get_site_summary(site_id: uuid.UUID, db: Session = Depends(get_db)):
@@ -93,6 +133,8 @@ def delete_site(site_id: uuid.UUID, db: Session = Depends(get_db)):
     site = db.query(Site).filter(Site.site_id == site_id).first()
     if not site:
         raise HTTPException(status_code=404, detail="Site not found")
+    # Explicitly delete child records to avoid database constraint conflicts
+    db.query(SiteEncoreScore).filter(SiteEncoreScore.site_id == site_id).delete()
     db.query(SiteSonScore).filter(SiteSonScore.site_id == site_id).delete()
     db.delete(site)
     db.commit()

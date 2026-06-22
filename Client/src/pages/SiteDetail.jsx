@@ -109,32 +109,41 @@ export default function SiteDetail() {
               </section>
            </div>
 
-           <div className="space-y-6">
-              <DataQualityCard quality={analysis.data_quality} />
-              <div className="bg-white rounded-[2rem] border border-gray-100 p-8 shadow-sm">
-                 <h3 className="text-xs font-black text-gray-800 uppercase tracking-widest mb-6">Pressure Drivers</h3>
-                 <div className="space-y-4">
-                    <PressureDriver title="Land Use" level="VH" />
-                    <PressureDriver title="Water Use" level="M" />
-                    <PressureDriver title="Pollutants" level="L" />
-                    <PressureDriver title="GHG" level="H" />
-                 </div>
-              </div>
-           </div>
-        </div>
+            <div className="space-y-6">
+               <DataQualityCard quality={analysis.data_quality} />
+               <div className="bg-white rounded-[2rem] border border-gray-100 p-8 shadow-sm">
+                  <h3 className="text-xs font-black text-gray-800 uppercase tracking-widest mb-6">Top Pressure Drivers</h3>
+                  <div className="space-y-4">
+                     {analysis.top_impacts && analysis.top_impacts.length > 0 ? (
+                       analysis.top_impacts.map((imp, idx) => (
+                         <PressureDriver key={idx} title={imp.impact_driver} level={imp.rating} />
+                       ))
+                     ) : (
+                       <p className="text-xs text-gray-400">No pressure drivers identified.</p>
+                     )}
+                  </div>
+               </div>
+            </div>
+         </div>
       ) : (
         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {/* This is a placeholder for the 25-card grid */}
-              {[...Array(25)].map((_, i) => (
-                <div key={i} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-help group">
-                   <div className="h-2 w-full bg-gray-50 rounded-full mb-4 overflow-hidden">
-                      <div className="h-full bg-green-500 transition-all group-hover:scale-x-110 origin-left" style={{ width: `${((i * 17) % 70) + 30}%` }} />
-                   </div>
-                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-tighter truncate">ES Service {i+1}</p>
-                   <p className="text-xs font-black text-gray-800 mt-1 uppercase tracking-widest">{['VL', 'L', 'M', 'H', 'VH'][(i * 7) % 5]}</p>
-                </div>
-              ))}
+              {analysis.top_dependencies && analysis.top_dependencies.length > 0 ? (
+                analysis.top_dependencies.map((dep, i) => (
+                  <div key={i} title={dep.justification} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-help group flex flex-col justify-between min-h-[160px]">
+                     <div>
+                       <div className="h-2 w-full bg-gray-50 rounded-full mb-4 overflow-hidden">
+                          <div className="h-full bg-green-500 transition-all group-hover:scale-x-110 origin-left" style={{ width: dep.rating === 'VH' ? '100%' : dep.rating === 'H' ? '80%' : dep.rating === 'M' ? '60%' : dep.rating === 'L' ? '40%' : '20%' }} />
+                       </div>
+                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-tighter truncate" title={dep.ecosystem_service}>{dep.ecosystem_service}</p>
+                       <p className="text-xs font-black text-gray-800 mt-1 uppercase tracking-widest">{dep.rating}</p>
+                     </div>
+                     <p className="text-[10px] text-gray-400 mt-2 line-clamp-3 italic">"{dep.justification}"</p>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full py-12 text-center text-xs text-gray-400">No dependencies identified.</div>
+              )}
            </div>
         </div>
       )}

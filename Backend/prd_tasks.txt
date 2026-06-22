@@ -1,0 +1,1093 @@
+Total lines: 1886
+
+Line 67: .nav-logo h1 {
+  +1: font-family: 'Syne', sans-serif;
+  +2: font-size: 14px;
+  +3: font-weight: 700;
+  +4: color: var(--text);
+  +5: line-height: 1.3;
+  +6: }
+  +7: 
+  +8: .nav-section {
+  +9: padding: 6px 0;
+  +10: }
+  +11: 
+  +12: .nav-section-label {
+  +13: font-family: 'DM Mono', monospace;
+  +14: font-size: 9px;
+  +15: color: var(--text-dim);
+  +16: letter-spacing: 0.12em;
+  +17: text-transform: uppercase;
+  +18: padding: 8px 20px 4px;
+  +19: }
+  +20: 
+  +21: .nav-item {
+  +22: display: block;
+  +23: padding: 7px 20px;
+  +24: color: var(--text-muted);
+
+Line 140: h2 {
+  +1: font-family: 'Syne', sans-serif;
+  +2: font-size: 22px;
+  +3: font-weight: 700;
+  +4: color: var(--text);
+  +5: }
+  +6: 
+  +7: h3 {
+  +8: font-family: 'Syne', sans-serif;
+  +9: font-size: 15px;
+  +10: font-weight: 600;
+  +11: color: var(--text);
+  +12: margin: 28px 0 12px;
+  +13: }
+  +14: 
+  +15: h4 {
+  +16: font-family: 'DM Mono', monospace;
+  +17: font-size: 11px;
+  +18: color: var(--accent2);
+  +19: letter-spacing: 0.1em;
+  +20: text-transform: uppercase;
+  +21: margin: 20px 0 8px;
+  +22: }
+  +23: 
+  +24: p {
+
+Line 147: h3 {
+  +1: font-family: 'Syne', sans-serif;
+  +2: font-size: 15px;
+  +3: font-weight: 600;
+  +4: color: var(--text);
+  +5: margin: 28px 0 12px;
+  +6: }
+  +7: 
+  +8: h4 {
+  +9: font-family: 'DM Mono', monospace;
+  +10: font-size: 11px;
+  +11: color: var(--accent2);
+  +12: letter-spacing: 0.1em;
+  +13: text-transform: uppercase;
+  +14: margin: 20px 0 8px;
+  +15: }
+  +16: 
+  +17: p {
+  +18: color: var(--text-muted);
+  +19: margin-bottom: 12px;
+  +20: font-size: 13.5px;
+  +21: }
+  +22: 
+  +23: /* CALLOUT BOX */
+  +24: .callout {
+
+Line 363: .kanban-title {
+  +1: font-family: 'Syne', sans-serif;
+  +2: font-size: 14px;
+  +3: font-weight: 600;
+  +4: color: var(--text);
+  +5: margin-bottom: 8px;
+  +6: }
+  +7: 
+  +8: .kanban-desc {
+  +9: font-size: 12.5px;
+  +10: color: var(--text-muted);
+  +11: margin-bottom: 12px;
+  +12: }
+  +13: 
+  +14: .kanban-tasks {
+  +15: list-style: none;
+  +16: padding: 0;
+  +17: margin: 0;
+  +18: }
+  +19: 
+  +20: .kanban-tasks li {
+  +21: font-size: 12px;
+  +22: color: var(--text-muted);
+  +23: padding: 4px 0;
+  +24: padding-left: 16px;
+
+Line 634: .hero h1 {
+  +1: font-family: 'Syne', sans-serif;
+  +2: font-size: 36px;
+  +3: font-weight: 800;
+  +4: color: var(--text);
+  +5: line-height: 1.15;
+  +6: margin-bottom: 16px;
+  +7: }
+  +8: 
+  +9: .hero h1 span { color: var(--accent); }
+  +10: 
+  +11: .hero-meta {
+  +12: display: flex;
+  +13: gap: 24px;
+  +14: flex-wrap: wrap;
+  +15: margin-top: 24px;
+  +16: }
+  +17: 
+  +18: .meta-item {
+  +19: font-family: 'DM Mono', monospace;
+  +20: font-size: 11px;
+  +21: color: var(--text-dim);
+  +22: }
+  +23: 
+  +24: .meta-item span {
+
+Line 643: .hero h1 span { color: var(--accent); }
+  +1: 
+  +2: .hero-meta {
+  +3: display: flex;
+  +4: gap: 24px;
+  +5: flex-wrap: wrap;
+  +6: margin-top: 24px;
+  +7: }
+  +8: 
+  +9: .meta-item {
+  +10: font-family: 'DM Mono', monospace;
+  +11: font-size: 11px;
+  +12: color: var(--text-dim);
+  +13: }
+  +14: 
+  +15: .meta-item span {
+  +16: color: var(--text-muted);
+  +17: margin-left: 8px;
+  +18: }
+  +19: 
+  +20: /* SCROLLBAR */
+  +21: ::-webkit-scrollbar { width: 6px; height: 6px; }
+  +22: ::-webkit-scrollbar-track { background: var(--bg); }
+  +23: ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  +24: ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+Line 718: <h1>Impacts &amp; Dependencies<br>Module</h1>
+  +1: </div>
+  +2: 
+  +3: <div class="nav-section">
+  +4: <div class="nav-section-label">Overview</div>
+  +5: <a class="nav-item active" href="#overview"><span class="num">01</span>What We're Building</a>
+  +6: <a class="nav-item" href="#why"><span class="num">02</span>Why We Beat Nala</a>
+  +7: <a class="nav-item" href="#scope"><span class="num">03</span>Scope & Placement</a>
+  +8: </div>
+  +9: 
+  +10: <div class="nav-section">
+  +11: <div class="nav-section-label">Architecture</div>
+  +12: <a class="nav-item" href="#datamodel"><span class="num">04</span>Data Model</a>
+  +13: <a class="nav-item" href="#computed"><span class="num">05</span>Computed Logic</a>
+  +14: <a class="nav-item" href="#datasources"><span class="num">06</span>Data Sources</a>
+  +15: </div>
+  +16: 
+  +17: <div class="nav-section">
+  +18: <div class="nav-section-label">Product</div>
+  +19: <a class="nav-item" href="#views"><span class="num">07</span>UI Views Spec</a>
+  +20: <a class="nav-item" href="#beyond"><span class="num">08</span>Beyond Nala (TNFD+)</a>
+  +21: <a class="nav-item" href="#kanban"><span class="num">09</span>Kanban Cards</a>
+  +22: <a class="nav-item" href="#handover"><span class="num">10</span>Handover Checklist</a>
+  +23: </div>
+  +24: </nav>
+
+Line 750: <h1>Impacts &amp; Dependencies<br><span>Module</span></h1>
+  +1: <p>A complete build spec for the site-level nature impact and ecosystem dependency assessment module, aligned to TNFD LEAP and ENCORE. Designed to match — and exceed — Nala's implementation.</p>
+  +2: <div class="hero-meta">
+  +3: <div class="meta-item">STATUS <span>Ready for Development</span></div>
+  +4: <div class="meta-item">PHASE <span>L2.7 → A3 Bridge</span></div>
+  +5: <div class="meta-item">DATA SOURCE <span>ENCORE + WRI + IBAT</span></div>
+  +6: <div class="meta-item">FRAMEWORK <span>TNFD LEAP (primary), CSRD ESRS E4 (secondary)</span></div>
+  +7: </div>
+  +8: </div>
+  +9: 
+  +10: <!-- SECTION 1: WHAT WE'RE BUILDING -->
+  +11: <section id="overview">
+  +12: <div class="section-header">
+  +13: <span class="section-num">01</span>
+  +14: <h2>What We're Building</h2>
+  +15: </div>
+  +16: 
+  +17: <p>This module answers a single question for every site in a company's portfolio: <strong style="color:var(--text)">How much does this site impact nature, and how much does it depend on it?</strong></p>
+  +18: 
+  +19: <p>It takes ENCORE activity-based data and location-specific State of Nature data, combines them using a defined methodology, and surfaces results as four views: a portfolio dashboard, a site list, a site impact view, and a site dependency view.</p>
+  +20: 
+  +21: <div class="callout">
+  +22: <p><strong>Think of it this way:</strong> ENCORE tells you what pressures a cement plant <em>typically</em> exerts. State of Nature data tells you whether the ecosystem at <em>this specific cement plant's location</em> is already stressed. Together they tell you if this site is actually a problem — or just theoretically one.</p>
+  +23: </div>
+  +24: 
+
+Line 764: <h2>What We're Building</h2>
+  +1: </div>
+  +2: 
+  +3: <p>This module answers a single question for every site in a company's portfolio: <strong style="color:var(--text)">How much does this site impact nature, and how much does it depend on it?</strong></p>
+  +4: 
+  +5: <p>It takes ENCORE activity-based data and location-specific State of Nature data, combines them using a defined methodology, and surfaces results as four views: a portfolio dashboard, a site list, a site impact view, and a site dependency view.</p>
+  +6: 
+  +7: <div class="callout">
+  +8: <p><strong>Think of it this way:</strong> ENCORE tells you what pressures a cement plant <em>typically</em> exerts. State of Nature data tells you whether the ecosystem at <em>this specific cement plant's location</em> is already stressed. Together they tell you if this site is actually a problem — or just theoretically one.</p>
+  +9: </div>
+  +10: 
+  +11: <h3>Four Screens to Build</h3>
+  +12: <div class="card-grid">
+  +13: <div class="card">
+  +14: <div class="card-num">SCREEN 01</div>
+  +15: <div class="card-title">Portfolio Dashboard</div>
+  +16: <div class="card-desc">KPIs, pressure/dependency bar charts, impact level donut, geo map, top priority sites list</div>
+  +17: </div>
+  +18: <div class="card">
+  +19: <div class="card-num">SCREEN 02</div>
+  +20: <div class="card-title">All Sites List</div>
+  +21: <div class="card-desc">Filterable table with TNFD priority flag, 5 key pressures, 5 key dependencies as icon-badges</div>
+  +22: </div>
+  +23: <div class="card">
+  +24: <div class="card-num">SCREEN 03</div>
+
+Line 775: <h3>Four Screens to Build</h3>
+  +1: <div class="card-grid">
+  +2: <div class="card">
+  +3: <div class="card-num">SCREEN 01</div>
+  +4: <div class="card-title">Portfolio Dashboard</div>
+  +5: <div class="card-desc">KPIs, pressure/dependency bar charts, impact level donut, geo map, top priority sites list</div>
+  +6: </div>
+  +7: <div class="card">
+  +8: <div class="card-num">SCREEN 02</div>
+  +9: <div class="card-title">All Sites List</div>
+  +10: <div class="card-desc">Filterable table with TNFD priority flag, 5 key pressures, 5 key dependencies as icon-badges</div>
+  +11: </div>
+  +12: <div class="card">
+  +13: <div class="card-num">SCREEN 03</div>
+  +14: <div class="card-title">Site: Impacts Tab</div>
+  +15: <div class="card-desc">12 pressure cards grouped, Impact Level table across 4 Nature Impacts, overall score</div>
+  +16: </div>
+  +17: <div class="card">
+  +18: <div class="card-num">SCREEN 04</div>
+  +19: <div class="card-title">Site: Dependencies Tab</div>
+  +20: <div class="card-desc">25 ecosystem service cards grouped, Dependency Level table across 3 categories</div>
+  +21: </div>
+  +22: </div>
+  +23: </section>
+  +24: 
+
+Line 804: <h2>Why We Beat Nala</h2>
+  +1: </div>
+  +2: 
+  +3: <p>Nala is CSRD-first. We are TNFD-first. This single difference changes what we surface, how we score, and what actions we recommend.</p>
+  +4: 
+  +5: <div class="vs-table">
+  +6: <div class="vs-col nala">
+  +7: <div class="vs-col-header">🟠 Nala</div>
+  +8: <div class="vs-item">CSRD ESRS E4 materiality as primary output</div>
+  +9: <div class="vs-item">Impact Level informs reporting obligation, not financial risk</div>
+  +10: <div class="vs-item">Dependency Level shown but not connected to risk pathway</div>
+  +11: <div class="vs-item">No explicit link to prioritization framework</div>
+  +12: <div class="vs-item">GHG Emissions included in pressures (duplicates TCFD)</div>
+  +13: <div class="vs-item">State of Nature sourced generically</div>
+  +14: <div class="vs-item">No scenario sensitivity</div>
+  +15: </div>
+  +16: <div class="vs-col ours">
+  +17: <div class="vs-col-header">✦ Our Build</div>
+  +18: <div class="vs-item">TNFD LEAP A1–A3 risk pathway as primary output</div>
+  +19: <div class="vs-item">Impact Level feeds directly into A3 financial risk quantification</div>
+  +20: <div class="vs-item">Dependency Level explicitly feeds TNFD "dependency → transition risk" translation</div>
+  +21: <div class="vs-item">Composite Priority Score (0–100) enables ranked materiality triage</div>
+  +22: <div class="vs-item">GHG excluded (routes to TCFD); focus on non-climate nature pressures</div>
+  +23: <div class="vs-item">State of Nature sourced site-specifically via WRI Aqueduct + IBAT APIs</div>
+  +24: <div class="vs-item">Architecture ready for scenario-based SoN adjustments</div>
+
+Line 837: <h2>Scope &amp; Placement in TNFD Workflow</h2>
+  +1: </div>
+  +2: 
+  +3: <p>This module is the bridge between L2 ENCORE screening and Phase 4 risk quantification. It is not a new phase — it is the output layer of L2 that feeds into A1–A3.</p>
+  +4: 
+  +5: <div class="flow">
+  +6: <div class="flow-node">
+  +7: <div class="fn-label">L1</div>
+  +8: <div class="fn-title">Site Inventory</div>
+  +9: </div>
+  +10: <div class="flow-arrow">→</div>
+  +11: <div class="flow-node">
+  +12: <div class="fn-label">L2</div>
+  +13: <div class="fn-title">ENCORE Screening</div>
+  +14: </div>
+  +15: <div class="flow-arrow">→</div>
+  +16: <div class="flow-node highlight">
+  +17: <div class="fn-label">L2.7 ← THIS MODULE</div>
+  +18: <div class="fn-title">Impacts &amp; Dependencies</div>
+  +19: </div>
+  +20: <div class="flow-arrow">→</div>
+  +21: <div class="flow-node">
+  +22: <div class="fn-label">A1–A3</div>
+  +23: <div class="fn-title">Risk Assessment</div>
+  +24: </div>
+
+Line 895: <h2>Data Model</h2>
+  +1: </div>
+  +2: 
+  +3: <p>Three tables. Everything else is computed. No subsheets, no redundancy.</p>
+  +4: 
+  +5: <!-- TABLE 1 -->
+  +6: <div class="schema-block">
+  +7: <div class="schema-header">
+  +8: <span class="schema-table-name">sites</span>
+  +9: <span class="schema-desc">Exists in L1 — reference only, no new columns needed</span>
+  +10: </div>
+  +11: <div class="schema-fields">
+  +12: <div class="schema-field">
+  +13: <span class="sf-name pk">site_id</span>
+  +14: <span class="sf-type">UUID / PK</span>
+  +15: <span class="sf-note">Primary key from L1</span>
+  +16: </div>
+  +17: <div class="schema-field">
+  +18: <span class="sf-name">name, country</span>
+  +19: <span class="sf-type">VARCHAR</span>
+  +20: <span class="sf-note">Display fields</span>
+  +21: </div>
+  +22: <div class="schema-field">
+  +23: <span class="sf-name">latitude, longitude</span>
+  +24: <span class="sf-type">DECIMAL</span>
+
+Line 1215: <h2>Computed Logic</h2>
+  +1: </div>
+  +2: 
+  +3: <p>All computed values are derived on-the-fly from the 3 tables above. Never store these — recompute on read to keep logic in one place.</p>
+  +4: 
+  +5: <h3>Step 1: Enum → Numeric Conversion</h3>
+  +6: <p>Used throughout. Always apply this mapping before any arithmetic:</p>
+  +7: <pre><code>VL = 1 | L = 2 | M = 3 | H = 4 | VH = 5</code></pre>
+  +8: 
+  +9: <h3>Step 2: Four Nature Impact Scores</h3>
+  +10: 
+  +11: <table>
+  +12: <thead>
+  +13: <tr>
+  +14: <th>Nature Impact</th>
+  +15: <th>Environmental Pressure (EP)</th>
+  +16: <th>State of Nature (SoN)</th>
+  +17: </tr>
+  +18: </thead>
+  +19: <tbody>
+  +20: <tr>
+  +21: <td><strong>Increased Water Scarcity</strong></td>
+  +22: <td><code>ep_water_use</code></td>
+  +23: <td><code>water_scarcity_level</code></td>
+  +24: </tr>
+
+Line 1220: <h3>Step 1: Enum → Numeric Conversion</h3>
+  +1: <p>Used throughout. Always apply this mapping before any arithmetic:</p>
+  +2: <pre><code>VL = 1 | L = 2 | M = 3 | H = 4 | VH = 5</code></pre>
+  +3: 
+  +4: <h3>Step 2: Four Nature Impact Scores</h3>
+  +5: 
+  +6: <table>
+  +7: <thead>
+  +8: <tr>
+  +9: <th>Nature Impact</th>
+  +10: <th>Environmental Pressure (EP)</th>
+  +11: <th>State of Nature (SoN)</th>
+  +12: </tr>
+  +13: </thead>
+  +14: <tbody>
+  +15: <tr>
+  +16: <td><strong>Increased Water Scarcity</strong></td>
+  +17: <td><code>ep_water_use</code></td>
+  +18: <td><code>water_scarcity_level</code></td>
+  +19: </tr>
+  +20: <tr>
+  +21: <td><strong>Increased Water Pollution</strong></td>
+  +22: <td><code>MAX(ep_toxic_emissions, ep_nutrient_emissions)</code></td>
+  +23: <td><code>water_pollution_level</code></td>
+  +24: </tr>
+
+Line 1224: <h3>Step 2: Four Nature Impact Scores</h3>
+  +1: 
+  +2: <table>
+  +3: <thead>
+  +4: <tr>
+  +5: <th>Nature Impact</th>
+  +6: <th>Environmental Pressure (EP)</th>
+  +7: <th>State of Nature (SoN)</th>
+  +8: </tr>
+  +9: </thead>
+  +10: <tbody>
+  +11: <tr>
+  +12: <td><strong>Increased Water Scarcity</strong></td>
+  +13: <td><code>ep_water_use</code></td>
+  +14: <td><code>water_scarcity_level</code></td>
+  +15: </tr>
+  +16: <tr>
+  +17: <td><strong>Increased Water Pollution</strong></td>
+  +18: <td><code>MAX(ep_toxic_emissions, ep_nutrient_emissions)</code></td>
+  +19: <td><code>water_pollution_level</code></td>
+  +20: </tr>
+  +21: <tr>
+  +22: <td><strong>Loss of Intact Natural Land</strong></td>
+  +23: <td><code>ep_land_use</code></td>
+  +24: <td><code>land_degradation_level</code></td>
+
+Line 1261: <h3>Step 3: Overall Impact Score (Nala Formula)</h3>
+  +1: 
+  +2: <div class="formula">
+  +3: <div class="formula-title">Impact Score Calculation</div>
+  +4: <div class="formula-eq">
+  +5: raw_sum = Σ (EP_i + SoN_i) across 4 Nature Impacts
+  +6: <br><br>
+  +7: impact_score = (raw_sum − 4) / (40 − 4) × 10
+  +8: </div>
+  +9: <div class="formula-vars">
+  +10: <div class="formula-var">is_min = 4 &nbsp;&nbsp;(4 impacts × minimum numeric sum of 1+1=2... but baseline is actually 4 because VL+VL=2 per impact × 4 = 8; Nala uses 4 as minimum total EP score pre-SoN combination — use is_min=4 as stated)</div>
+  +11: <div class="formula-var">is_max = 40 &nbsp;(4 impacts × VH+VH = 5+5=10 each × 4 = 40)</div>
+  +12: <div class="formula-var">Output range: 0.0 → 10.0</div>
+  +13: </div>
+  +14: </div>
+  +15: 
+  +16: <h3>Step 4: Overall Impact Level</h3>
+  +17: <pre><code>0.0 – 2.0  →  <span class="val">Very Low</span>
+  +18: 2.0 – 4.0  →  <span class="val">Low</span>
+  +19: 4.0 – 6.0  →  <span class="val">Moderate</span>
+  +20: 6.0 – 8.0  →  <span class="val">High</span>
+  +21: 8.0 – 10.0 →  <span class="val">Very High</span></code></pre>
+  +22: 
+  +23: <h3>Step 5: Biodiversity Loss Level (for SoN input)</h3>
+  +24: <pre><code>min_score = MIN(msa_score, bii_score)   <span class="comment">// both in 0–1 range</span>
+
+Line 1277: <h3>Step 4: Overall Impact Level</h3>
+  +1: <pre><code>0.0 – 2.0  →  <span class="val">Very Low</span>
+  +2: 2.0 – 4.0  →  <span class="val">Low</span>
+  +3: 4.0 – 6.0  →  <span class="val">Moderate</span>
+  +4: 6.0 – 8.0  →  <span class="val">High</span>
+  +5: 8.0 – 10.0 →  <span class="val">Very High</span></code></pre>
+  +6: 
+  +7: <h3>Step 5: Biodiversity Loss Level (for SoN input)</h3>
+  +8: <pre><code>min_score = MIN(msa_score, bii_score)   <span class="comment">// both in 0–1 range</span>
+  +9: 
+  +10: min_score > 0.80  →  <span class="val">VL</span>  (Very Low Biodiversity Loss)
+  +11: min_score 0.60–0.80  →  <span class="val">L</span>
+  +12: min_score 0.40–0.60  →  <span class="val">M</span>
+  +13: min_score 0.20–0.40  →  <span class="val">H</span>
+  +14: min_score ≤ 0.20  →  <span class="val">VH</span>  (Very High Biodiversity Loss)</code></pre>
+  +15: 
+  +16: <h3>Step 6: Dependency Levels (3 categories)</h3>
+  +17: <p>Each Dependency Level = matrix lookup of (ENCORE Dependency Rating) × (relevant SoN level):</p>
+  +18: 
+  +19: <table class="matrix-table">
+  +20: <thead>
+  +21: <tr>
+  +22: <th>ENCORE Dep →<br>SoN Loss ↓</th>
+  +23: <th><span class="badge badge-vl">VL</span></th>
+  +24: <th><span class="badge badge-l">L</span></th>
+
+Line 1284: <h3>Step 5: Biodiversity Loss Level (for SoN input)</h3>
+  +1: <pre><code>min_score = MIN(msa_score, bii_score)   <span class="comment">// both in 0–1 range</span>
+  +2: 
+  +3: min_score > 0.80  →  <span class="val">VL</span>  (Very Low Biodiversity Loss)
+  +4: min_score 0.60–0.80  →  <span class="val">L</span>
+  +5: min_score 0.40–0.60  →  <span class="val">M</span>
+  +6: min_score 0.20–0.40  →  <span class="val">H</span>
+  +7: min_score ≤ 0.20  →  <span class="val">VH</span>  (Very High Biodiversity Loss)</code></pre>
+  +8: 
+  +9: <h3>Step 6: Dependency Levels (3 categories)</h3>
+  +10: <p>Each Dependency Level = matrix lookup of (ENCORE Dependency Rating) × (relevant SoN level):</p>
+  +11: 
+  +12: <table class="matrix-table">
+  +13: <thead>
+  +14: <tr>
+  +15: <th>ENCORE Dep →<br>SoN Loss ↓</th>
+  +16: <th><span class="badge badge-vl">VL</span></th>
+  +17: <th><span class="badge badge-l">L</span></th>
+  +18: <th><span class="badge badge-m">M</span></th>
+  +19: <th><span class="badge badge-h">H</span></th>
+  +20: <th><span class="badge badge-vh">VH</span></th>
+  +21: </tr>
+  +22: </thead>
+  +23: <tbody>
+  +24: <tr>
+
+Line 1293: <h3>Step 6: Dependency Levels (3 categories)</h3>
+  +1: <p>Each Dependency Level = matrix lookup of (ENCORE Dependency Rating) × (relevant SoN level):</p>
+  +2: 
+  +3: <table class="matrix-table">
+  +4: <thead>
+  +5: <tr>
+  +6: <th>ENCORE Dep →<br>SoN Loss ↓</th>
+  +7: <th><span class="badge badge-vl">VL</span></th>
+  +8: <th><span class="badge badge-l">L</span></th>
+  +9: <th><span class="badge badge-m">M</span></th>
+  +10: <th><span class="badge badge-h">H</span></th>
+  +11: <th><span class="badge badge-vh">VH</span></th>
+  +12: </tr>
+  +13: </thead>
+  +14: <tbody>
+  +15: <tr>
+  +16: <td><span class="badge badge-vl">VL Loss</span></td>
+  +17: <td>VL</td><td>VL</td><td>VL</td><td>VL</td><td>L</td>
+  +18: </tr>
+  +19: <tr>
+  +20: <td><span class="badge badge-l">L Loss</span></td>
+  +21: <td>VL</td><td>VL</td><td>L</td><td>M</td><td>H</td>
+  +22: </tr>
+  +23: <tr>
+  +24: <td><span class="badge badge-m">M Loss</span></td>
+
+Line 1338: <h3>Step 7: TNFD-Specific Derived Fields (our additions over Nala)</h3>
+  +1: <pre><code><span class="comment">// Composite Priority Score for A3 triage (0–100)</span>
+  +2: composite_priority_score = (impact_score × 5) + (dependency_risk_score × 5)
+  +3: where dependency_risk_score = MAX(water_dep_level, soil_dep_level, biodiv_dep_level) as numeric
+  +4: 
+  +5: <span class="comment">// TNFD Priority Flag</span>
+  +6: tnfd_priority = (overall_impact_level IN ['Moderate','High','Very High'])
+  +7: OR (any dependency_level IN ['High','Very High'])
+  +8: 
+  +9: <span class="comment">// Priority Tier for A3</span>
+  +10: Tier 1: composite_priority_score > 75
+  +11: Tier 2: composite_priority_score 50–75
+  +12: Tier 3: composite_priority_score < 50</code></pre>
+  +13: 
+  +14: </section>
+  +15: 
+  +16: <!-- SECTION 6: DATA SOURCES -->
+  +17: <section id="datasources">
+  +18: <div class="section-header">
+  +19: <span class="section-num">06</span>
+  +20: <h2>Data Sources &amp; Integration</h2>
+  +21: </div>
+  +22: 
+  +23: <table>
+  +24: <thead>
+
+Line 1358: <h2>Data Sources &amp; Integration</h2>
+  +1: </div>
+  +2: 
+  +3: <table>
+  +4: <thead>
+  +5: <tr>
+  +6: <th>Source</th>
+  +7: <th>What it provides</th>
+  +8: <th>Integration method</th>
+  +9: <th>Refresh cadence</th>
+  +10: </tr>
+  +11: </thead>
+  +12: <tbody>
+  +13: <tr>
+  +14: <td><strong>ENCORE API</strong></td>
+  +15: <td>12 pressures + 25 dependencies per SASB×Biome combination. Overall Pressure on Biodiversity. Overall Dependency on Biodiversity.</td>
+  +16: <td>REST API. Key: <code>{sasb_isic_code, biome_code}</code>. Aggregate MAX per site across activities.</td>
+  +17: <td>On site onboarding + activity edit</td>
+  +18: </tr>
+  +19: <tr>
+  +20: <td><strong>WRI Aqueduct</strong></td>
+  +21: <td>Baseline Water Stress score (0–5) per location</td>
+  +22: <td>REST API or GeoJSON spatial join. Key: <code>{lat, lng}</code> → nearest watershed polygon</td>
+  +23: <td>Annually (dataset updates ~yearly)</td>
+  +24: </tr>
+
+Line 1407: <h2>UI Views Specification</h2>
+  +1: </div>
+  +2: 
+  +3: <!-- SCREEN 1 -->
+  +4: <h3>Screen 1: Portfolio Dashboard</h3>
+  +5: <p>Entry point for the module. Portfolio-level summary, no site selection required.</p>
+  +6: 
+  +7: <h4>KPI Strip (4 cards)</h4>
+  +8: <table>
+  +9: <thead><tr><th>KPI Label</th><th>Value Logic</th><th>Click Action</th></tr></thead>
+  +10: <tbody>
+  +11: <tr>
+  +12: <td><strong>Analysed Sites</strong></td>
+  +13: <td><code>COUNT(sites with ENCORE scores) / COUNT(all sites)</code></td>
+  +14: <td>Opens All Sites list filtered to unanalysed</td>
+  +15: </tr>
+  +16: <tr>
+  +17: <td><strong>Top Pressure</strong></td>
+  +18: <td>The pressure name with highest average numeric rating across all sites</td>
+  +19: <td>Opens dashboard with that pressure highlighted in bar chart</td>
+  +20: </tr>
+  +21: <tr>
+  +22: <td><strong>Top Dependency</strong></td>
+  +23: <td>The dependency with highest average numeric rating across all sites</td>
+  +24: <td>Same, for dependencies tab</td>
+
+Line 1411: <h3>Screen 1: Portfolio Dashboard</h3>
+  +1: <p>Entry point for the module. Portfolio-level summary, no site selection required.</p>
+  +2: 
+  +3: <h4>KPI Strip (4 cards)</h4>
+  +4: <table>
+  +5: <thead><tr><th>KPI Label</th><th>Value Logic</th><th>Click Action</th></tr></thead>
+  +6: <tbody>
+  +7: <tr>
+  +8: <td><strong>Analysed Sites</strong></td>
+  +9: <td><code>COUNT(sites with ENCORE scores) / COUNT(all sites)</code></td>
+  +10: <td>Opens All Sites list filtered to unanalysed</td>
+  +11: </tr>
+  +12: <tr>
+  +13: <td><strong>Top Pressure</strong></td>
+  +14: <td>The pressure name with highest average numeric rating across all sites</td>
+  +15: <td>Opens dashboard with that pressure highlighted in bar chart</td>
+  +16: </tr>
+  +17: <tr>
+  +18: <td><strong>Top Dependency</strong></td>
+  +19: <td>The dependency with highest average numeric rating across all sites</td>
+  +20: <td>Same, for dependencies tab</td>
+  +21: </tr>
+  +22: <tr>
+  +23: <td><strong>TNFD Priority Sites</strong> <em>(our version of Nala's "CSRD Material")</em></td>
+  +24: <td><code>COUNT(tnfd_priority = true)</code></td>
+
+Line 1478: <h3>Screen 2: All Sites List</h3>
+  +1: <p>Filterable, sortable table. The "control center" for analysts working through sites.</p>
+  +2: 
+  +3: <h4>Table Columns</h4>
+  +4: <table>
+  +5: <thead><tr><th>Column</th><th>Data</th><th>Display</th></tr></thead>
+  +6: <tbody>
+  +7: <tr><td><strong>Site</strong></td><td>name + country</td><td>Text, clickable → site view</td></tr>
+  +8: <tr><td><strong>Activity</strong></td><td>activity name + ISIC sector</td><td>Text (show max-risk activity if multiple)</td></tr>
+  +9: <tr><td><strong>TNFD Priority</strong></td><td><code>tnfd_priority</code></td><td>Badge: "Priority" (amber) | "Not priority" (muted)</td></tr>
+  +10: <tr><td><strong>Impact Level</strong></td><td><code>overall_impact_level</code></td><td>Colored badge VL → VH</td></tr>
+  +11: <tr><td><strong>Pressures (5 icons)</strong></td><td>Water Use, Land Use, Toxic Emissions, Solid Waste, Disturbances</td><td>Icon + colored VL/L/M/H/VH chip per pressure</td></tr>
+  +12: <tr><td><strong>Dependencies (5 icons)</strong></td><td>Water Supply, Soil Retention, Pollination, Flood Control, Biomass</td><td>Icon + colored chip</td></tr>
+  +13: </tbody>
+  +14: </table>
+  +15: 
+  +16: <h4>Filters</h4>
+  +17: <ul class="list">
+  +18: <li>Search by site name</li>
+  +19: <li>Filter: TNFD Priority (yes/no)</li>
+  +20: <li>Filter: Overall Impact Level (multiselect VL/L/M/H/VH)</li>
+  +21: <li>Filter: Country</li>
+  +22: <li>Sort by: Impact Score, Priority Score, Site Name</li>
+  +23: </ul>
+  +24: 
+
+Line 1506: <h3>Screen 3: Site Detail — Impacts Tab</h3>
+  +1: <p>Mirrors Nala's site impact view. Two sections: Environmental Pressures cards, then Impact Level table.</p>
+  +2: 
+  +3: <h4>Environmental Pressures Section</h4>
+  +4: <ul class="list">
+  +5: <li>4 category groups: Land &amp; Water Use Change | Resource Use | Pollution | Other Pressures</li>
+  +6: <li>Each pressure = label + colored badge (VL–VH) + info tooltip (ENCORE explanation text)</li>
+  +7: <li>Toggle: "Hide undetected pressures" (hide pressures rated VL that ENCORE doesn't associate with the activity)</li>
+  +8: <li>If multiple activities: show MAX across activities, note "aggregated from N activities" in subtitle</li>
+  +9: </ul>
+  +10: 
+  +11: <h4>Overall Pressure on Biodiversity</h4>
+  +12: <ul class="list">
+  +13: <li>Separate highlighted card showing <code>ep_overall_pressure_biodiversity</code></li>
+  +14: <li>Tooltip: explain ENCORE's Species + Structural/Biotic Integrity methodology</li>
+  +15: </ul>
+  +16: 
+  +17: <h4>Impact Level Table</h4>
+  +18: <table>
+  +19: <thead><tr><th>Column</th><th>Content</th></tr></thead>
+  +20: <tbody>
+  +21: <tr><td><strong>Nature Impact</strong></td><td>Water Scarcity / Water Pollution / Loss of Natural Land / Loss of Biodiversity</td></tr>
+  +22: <tr><td><strong>Impact Level</strong></td><td>Colored badge (individual impact level = EP + SoN combined)</td></tr>
+  +23: <tr><td><strong>State of Nature</strong></td><td>Label (e.g., "Water Scarcity") + SoN rating badge</td></tr>
+  +24: <tr><td><strong>+ Environmental Pressure</strong></td><td>Label (e.g., "Water Use") + EP rating badge</td></tr>
+
+Line 1539: <h3>Screen 4: Site Detail — Dependencies Tab</h3>
+  +1: 
+  +2: <h4>Dependency on Ecosystem Services Section</h4>
+  +3: <ul class="list">
+  +4: <li>3 category groups: Provisioning | Regulating &amp; Maintenance | Cultural</li>
+  +5: <li>Each service = label + colored badge + info tooltip</li>
+  +6: <li>Toggle: "Hide undetected dependencies"</li>
+  +7: <li>Same MAX aggregation logic as Impacts tab</li>
+  +8: </ul>
+  +9: 
+  +10: <h4>Overall Dependency on Biodiversity</h4>
+  +11: <ul class="list">
+  +12: <li>Highlighted card for <code>dep_overall_dependency_biodiversity</code></li>
+  +13: </ul>
+  +14: 
+  +15: <h4>Dependency Level Table</h4>
+  +16: <table>
+  +17: <thead><tr><th>Column</th><th>Content</th></tr></thead>
+  +18: <tbody>
+  +19: <tr><td><strong>Nature Dependency</strong></td><td>Water Supply / Soil Retention / Overall Biodiversity</td></tr>
+  +20: <tr><td><strong>Dependency Level</strong></td><td>Colored badge (from matrix lookup)</td></tr>
+  +21: <tr><td><strong>State of Nature</strong></td><td>Relevant SoN label + rating</td></tr>
+  +22: <tr><td><strong>+ Dependency</strong></td><td>ENCORE dependency rating</td></tr>
+  +23: </tbody>
+  +24: </table>
+
+Line 1570: <h2>Beyond Nala — TNFD-Native Additions</h2>
+  +1: </div>
+  +2: 
+  +3: <p>These are features Nala doesn't have. Build them from day one — they are what make this a TNFD tool, not just a CSRD tool.</p>
+  +4: 
+  +5: <h3>Addition 1: TNFD Priority Tier Badge (not CSRD Materiality)</h3>
+  +6: <p>Replace Nala's "CSRD Expected/Not Expected" badge with a TNFD Priority Tier (1/2/3) derived from the Composite Priority Score. This directly feeds A3 and is the output financial analysts actually need.</p>
+  +7: 
+  +8: <h3>Addition 2: A3 Handoff Card</h3>
+  +9: <p>On the site detail view, after the Impact Level table, show a "Risk Pathway" section: a collapsible panel that maps the site's Impact Level and Dependency Levels to TNFD risk categories (Physical Risk, Transition Risk, Systemic Risk) and shows which A3 risk pathways to investigate next. This is the explicit LEAP bridge Nala is missing.</p>
+  +10: 
+  +11: <h3>Addition 3: Composite Priority Score</h3>
+  +12: <p>A single 0–100 number combining Impact Score and Dependency Risk. Shown on the All Sites list as a sortable column. Enables instant triage without reading individual ratings. Nala shows impact level separately from dependency level with no combined score.</p>
+  +13: 
+  +14: <h3>Addition 4: Data Confidence Indicator</h3>
+  +15: <p>Show a small data quality flag (High/Medium/Low) on each State of Nature input, based on data source resolution. When confidence is Low, show a tooltip explaining what data was used as a proxy. This is critical for TNFD disclosure documentation and builds user trust in the methodology.</p>
+  +16: 
+  +17: <h3>Addition 5: ENCORE Attribution Block</h3>
+  +18: <p>Automated, always-visible ENCORE attribution on every screen that uses ENCORE data (required by CC BY-SA 4.0 license). Include DOI link.</p>
+  +19: </section>
+  +20: 
+  +21: <!-- SECTION 9: KANBAN CARDS -->
+  +22: <section id="kanban">
+  +23: <div class="section-header">
+  +24: <span class="section-num">09</span>
+
+Line 1575: <h3>Addition 1: TNFD Priority Tier Badge (not CSRD Materiality)</h3>
+  +1: <p>Replace Nala's "CSRD Expected/Not Expected" badge with a TNFD Priority Tier (1/2/3) derived from the Composite Priority Score. This directly feeds A3 and is the output financial analysts actually need.</p>
+  +2: 
+  +3: <h3>Addition 2: A3 Handoff Card</h3>
+  +4: <p>On the site detail view, after the Impact Level table, show a "Risk Pathway" section: a collapsible panel that maps the site's Impact Level and Dependency Levels to TNFD risk categories (Physical Risk, Transition Risk, Systemic Risk) and shows which A3 risk pathways to investigate next. This is the explicit LEAP bridge Nala is missing.</p>
+  +5: 
+  +6: <h3>Addition 3: Composite Priority Score</h3>
+  +7: <p>A single 0–100 number combining Impact Score and Dependency Risk. Shown on the All Sites list as a sortable column. Enables instant triage without reading individual ratings. Nala shows impact level separately from dependency level with no combined score.</p>
+  +8: 
+  +9: <h3>Addition 4: Data Confidence Indicator</h3>
+  +10: <p>Show a small data quality flag (High/Medium/Low) on each State of Nature input, based on data source resolution. When confidence is Low, show a tooltip explaining what data was used as a proxy. This is critical for TNFD disclosure documentation and builds user trust in the methodology.</p>
+  +11: 
+  +12: <h3>Addition 5: ENCORE Attribution Block</h3>
+  +13: <p>Automated, always-visible ENCORE attribution on every screen that uses ENCORE data (required by CC BY-SA 4.0 license). Include DOI link.</p>
+  +14: </section>
+  +15: 
+  +16: <!-- SECTION 9: KANBAN CARDS -->
+  +17: <section id="kanban">
+  +18: <div class="section-header">
+  +19: <span class="section-num">09</span>
+  +20: <h2>Kanban Cards — 7 Shippable Tasks</h2>
+  +21: </div>
+  +22: 
+  +23: <p>Each card is independently shippable. Backend (BE) cards must precede their paired Frontend (FE) card, but FE cards can be built in parallel using mock data.</p>
+  +24: 
+
+Line 1578: <h3>Addition 2: A3 Handoff Card</h3>
+  +1: <p>On the site detail view, after the Impact Level table, show a "Risk Pathway" section: a collapsible panel that maps the site's Impact Level and Dependency Levels to TNFD risk categories (Physical Risk, Transition Risk, Systemic Risk) and shows which A3 risk pathways to investigate next. This is the explicit LEAP bridge Nala is missing.</p>
+  +2: 
+  +3: <h3>Addition 3: Composite Priority Score</h3>
+  +4: <p>A single 0–100 number combining Impact Score and Dependency Risk. Shown on the All Sites list as a sortable column. Enables instant triage without reading individual ratings. Nala shows impact level separately from dependency level with no combined score.</p>
+  +5: 
+  +6: <h3>Addition 4: Data Confidence Indicator</h3>
+  +7: <p>Show a small data quality flag (High/Medium/Low) on each State of Nature input, based on data source resolution. When confidence is Low, show a tooltip explaining what data was used as a proxy. This is critical for TNFD disclosure documentation and builds user trust in the methodology.</p>
+  +8: 
+  +9: <h3>Addition 5: ENCORE Attribution Block</h3>
+  +10: <p>Automated, always-visible ENCORE attribution on every screen that uses ENCORE data (required by CC BY-SA 4.0 license). Include DOI link.</p>
+  +11: </section>
+  +12: 
+  +13: <!-- SECTION 9: KANBAN CARDS -->
+  +14: <section id="kanban">
+  +15: <div class="section-header">
+  +16: <span class="section-num">09</span>
+  +17: <h2>Kanban Cards — 7 Shippable Tasks</h2>
+  +18: </div>
+  +19: 
+  +20: <p>Each card is independently shippable. Backend (BE) cards must precede their paired Frontend (FE) card, but FE cards can be built in parallel using mock data.</p>
+  +21: 
+  +22: <!-- CARD 1 -->
+  +23: <div class="kanban-card data">
+  +24: <div class="kanban-header">
+
+Line 1581: <h3>Addition 3: Composite Priority Score</h3>
+  +1: <p>A single 0–100 number combining Impact Score and Dependency Risk. Shown on the All Sites list as a sortable column. Enables instant triage without reading individual ratings. Nala shows impact level separately from dependency level with no combined score.</p>
+  +2: 
+  +3: <h3>Addition 4: Data Confidence Indicator</h3>
+  +4: <p>Show a small data quality flag (High/Medium/Low) on each State of Nature input, based on data source resolution. When confidence is Low, show a tooltip explaining what data was used as a proxy. This is critical for TNFD disclosure documentation and builds user trust in the methodology.</p>
+  +5: 
+  +6: <h3>Addition 5: ENCORE Attribution Block</h3>
+  +7: <p>Automated, always-visible ENCORE attribution on every screen that uses ENCORE data (required by CC BY-SA 4.0 license). Include DOI link.</p>
+  +8: </section>
+  +9: 
+  +10: <!-- SECTION 9: KANBAN CARDS -->
+  +11: <section id="kanban">
+  +12: <div class="section-header">
+  +13: <span class="section-num">09</span>
+  +14: <h2>Kanban Cards — 7 Shippable Tasks</h2>
+  +15: </div>
+  +16: 
+  +17: <p>Each card is independently shippable. Backend (BE) cards must precede their paired Frontend (FE) card, but FE cards can be built in parallel using mock data.</p>
+  +18: 
+  +19: <!-- CARD 1 -->
+  +20: <div class="kanban-card data">
+  +21: <div class="kanban-header">
+  +22: <span class="kanban-id">IMP-001</span>
+  +23: <div class="kanban-tags">
+  +24: <span class="tag-pill tag-data">Data</span>
+
+Line 1584: <h3>Addition 4: Data Confidence Indicator</h3>
+  +1: <p>Show a small data quality flag (High/Medium/Low) on each State of Nature input, based on data source resolution. When confidence is Low, show a tooltip explaining what data was used as a proxy. This is critical for TNFD disclosure documentation and builds user trust in the methodology.</p>
+  +2: 
+  +3: <h3>Addition 5: ENCORE Attribution Block</h3>
+  +4: <p>Automated, always-visible ENCORE attribution on every screen that uses ENCORE data (required by CC BY-SA 4.0 license). Include DOI link.</p>
+  +5: </section>
+  +6: 
+  +7: <!-- SECTION 9: KANBAN CARDS -->
+  +8: <section id="kanban">
+  +9: <div class="section-header">
+  +10: <span class="section-num">09</span>
+  +11: <h2>Kanban Cards — 7 Shippable Tasks</h2>
+  +12: </div>
+  +13: 
+  +14: <p>Each card is independently shippable. Backend (BE) cards must precede their paired Frontend (FE) card, but FE cards can be built in parallel using mock data.</p>
+  +15: 
+  +16: <!-- CARD 1 -->
+  +17: <div class="kanban-card data">
+  +18: <div class="kanban-header">
+  +19: <span class="kanban-id">IMP-001</span>
+  +20: <div class="kanban-tags">
+  +21: <span class="tag-pill tag-data">Data</span>
+  +22: <span class="tag-pill tag-p1">Priority 1</span>
+  +23: </div>
+  +24: </div>
+
+Line 1587: <h3>Addition 5: ENCORE Attribution Block</h3>
+  +1: <p>Automated, always-visible ENCORE attribution on every screen that uses ENCORE data (required by CC BY-SA 4.0 license). Include DOI link.</p>
+  +2: </section>
+  +3: 
+  +4: <!-- SECTION 9: KANBAN CARDS -->
+  +5: <section id="kanban">
+  +6: <div class="section-header">
+  +7: <span class="section-num">09</span>
+  +8: <h2>Kanban Cards — 7 Shippable Tasks</h2>
+  +9: </div>
+  +10: 
+  +11: <p>Each card is independently shippable. Backend (BE) cards must precede their paired Frontend (FE) card, but FE cards can be built in parallel using mock data.</p>
+  +12: 
+  +13: <!-- CARD 1 -->
+  +14: <div class="kanban-card data">
+  +15: <div class="kanban-header">
+  +16: <span class="kanban-id">IMP-001</span>
+  +17: <div class="kanban-tags">
+  +18: <span class="tag-pill tag-data">Data</span>
+  +19: <span class="tag-pill tag-p1">Priority 1</span>
+  +20: </div>
+  +21: </div>
+  +22: <div class="kanban-title">ENCORE API Integration &amp; site_encore_scores Ingestion</div>
+  +23: <div class="kanban-desc">Build the ingestion pipeline that queries ENCORE for each site's activities (SASB×Biome) and populates site_encore_scores with MAX aggregation across activities.</div>
+  +24: <ul class="kanban-tasks">
+
+Line 1595: <h2>Kanban Cards — 7 Shippable Tasks</h2>
+  +1: </div>
+  +2: 
+  +3: <p>Each card is independently shippable. Backend (BE) cards must precede their paired Frontend (FE) card, but FE cards can be built in parallel using mock data.</p>
+  +4: 
+  +5: <!-- CARD 1 -->
+  +6: <div class="kanban-card data">
+  +7: <div class="kanban-header">
+  +8: <span class="kanban-id">IMP-001</span>
+  +9: <div class="kanban-tags">
+  +10: <span class="tag-pill tag-data">Data</span>
+  +11: <span class="tag-pill tag-p1">Priority 1</span>
+  +12: </div>
+  +13: </div>
+  +14: <div class="kanban-title">ENCORE API Integration &amp; site_encore_scores Ingestion</div>
+  +15: <div class="kanban-desc">Build the ingestion pipeline that queries ENCORE for each site's activities (SASB×Biome) and populates site_encore_scores with MAX aggregation across activities.</div>
+  +16: <ul class="kanban-tasks">
+  +17: <li>Create <code>site_encore_scores</code> table (schema in Section 04)</li>
+  +18: <li>ENCORE API client: GET /pressures and /dependencies by SASB code + biome</li>
+  +19: <li>MAX aggregation logic when site has multiple activities</li>
+  +20: <li>Trigger: run on site creation, activity edit, and manual refresh</li>
+  +21: <li>Add ENCORE attribution metadata to each record (CC BY-SA 4.0)</li>
+  +22: </ul>
+  +23: <div class="kanban-footer">
+  +24: <span>Depends on: L1 site inventory, ENCORE API key</span>
+
+Line 1609: <div class="kanban-title">ENCORE API Integration &amp; site_encore_scores Ingestion</div>
+  +1: <div class="kanban-desc">Build the ingestion pipeline that queries ENCORE for each site's activities (SASB×Biome) and populates site_encore_scores with MAX aggregation across activities.</div>
+  +2: <ul class="kanban-tasks">
+  +3: <li>Create <code>site_encore_scores</code> table (schema in Section 04)</li>
+  +4: <li>ENCORE API client: GET /pressures and /dependencies by SASB code + biome</li>
+  +5: <li>MAX aggregation logic when site has multiple activities</li>
+  +6: <li>Trigger: run on site creation, activity edit, and manual refresh</li>
+  +7: <li>Add ENCORE attribution metadata to each record (CC BY-SA 4.0)</li>
+  +8: </ul>
+  +9: <div class="kanban-footer">
+  +10: <span>Depends on: L1 site inventory, ENCORE API key</span>
+  +11: <span>Est: 3–5 days</span>
+  +12: </div>
+  +13: </div>
+  +14: 
+  +15: <!-- CARD 2 -->
+  +16: <div class="kanban-card data">
+  +17: <div class="kanban-header">
+  +18: <span class="kanban-id">IMP-002</span>
+  +19: <div class="kanban-tags">
+  +20: <span class="tag-pill tag-data">Data</span>
+  +21: <span class="tag-pill tag-p1">Priority 1</span>
+  +22: </div>
+  +23: </div>
+  +24: <div class="kanban-title">State of Nature Data Ingestion (WRI + IBAT)</div>
+
+Line 1633: <div class="kanban-title">State of Nature Data Ingestion (WRI + IBAT)</div>
+  +1: <div class="kanban-desc">Spatial lookup pipeline that takes each site's lat/lng and populates site_state_of_nature with water stress, BII, and MSA scores.</div>
+  +2: <ul class="kanban-tasks">
+  +3: <li>Create <code>site_state_of_nature</code> table (schema in Section 04)</li>
+  +4: <li>WRI Aqueduct API (or CSV): lookup baseline water stress by lat/lng</li>
+  +5: <li>IBAT API (or pre-loaded raster): lookup MSA + BII by lat/lng</li>
+  +6: <li>Apply bucketing formulas for level enums (see Section 05)</li>
+  +7: <li>Set data_confidence based on data source resolution</li>
+  +8: <li>MVP fallback: manual CSV import if API access delayed</li>
+  +9: </ul>
+  +10: <div class="kanban-footer">
+  +11: <span>Depends on: WRI Aqueduct access, IBAT license</span>
+  +12: <span>Est: 3–4 days</span>
+  +13: </div>
+  +14: </div>
+  +15: 
+  +16: <!-- CARD 3 -->
+  +17: <div class="kanban-card be">
+  +18: <div class="kanban-header">
+  +19: <span class="kanban-id">IMP-003</span>
+  +20: <div class="kanban-tags">
+  +21: <span class="tag-pill tag-be">Backend</span>
+  +22: <span class="tag-pill tag-p1">Priority 1</span>
+  +23: </div>
+  +24: </div>
+
+Line 1658: <div class="kanban-title">Computed Fields API Endpoint</div>
+  +1: <div class="kanban-desc">A single API endpoint (or computed DB view) that takes site_id and returns all derived values: impact scores, dependency levels, priority tier, TNFD flags.</div>
+  +2: <ul class="kanban-tasks">
+  +3: <li>Implement enum→numeric conversion helper (VL=1…VH=5)</li>
+  +4: <li>Compute 4 individual nature impact levels per site</li>
+  +5: <li>Compute overall impact score (Nala formula) and overall_impact_level</li>
+  +6: <li>Compute 3 dependency levels using matrix lookup (Section 05)</li>
+  +7: <li>Compute composite_priority_score and priority_tier</li>
+  +8: <li>Expose as: GET /api/sites/:id/impact-dependency-summary</li>
+  +9: <li>Expose as: GET /api/portfolio/impact-dependency-overview (for dashboard)</li>
+  +10: </ul>
+  +11: <div class="kanban-footer">
+  +12: <span>Depends on: IMP-001, IMP-002</span>
+  +13: <span>Est: 2–3 days</span>
+  +14: </div>
+  +15: </div>
+  +16: 
+  +17: <!-- CARD 4 -->
+  +18: <div class="kanban-card fe">
+  +19: <div class="kanban-header">
+  +20: <span class="kanban-id">IMP-004</span>
+  +21: <div class="kanban-tags">
+  +22: <span class="tag-pill tag-fe">Frontend</span>
+  +23: <span class="tag-pill tag-p1">Priority 1</span>
+  +24: </div>
+
+Line 1684: <div class="kanban-title">Portfolio Dashboard Screen</div>
+  +1: <div class="kanban-desc">The main Impacts &amp; Dependencies dashboard. KPI strip, bar charts, impact donut, world map, top sites list.</div>
+  +2: <ul class="kanban-tasks">
+  +3: <li>4-card KPI strip (Analysed Sites, Top Pressure, Top Dependency, TNFD Priority Count)</li>
+  +4: <li>Horizontal stacked bar chart — Pressures/Dependencies toggle (5 bars each)</li>
+  +5: <li>Impact Level donut chart with legend (VL/L/M/H/VH counts + %)</li>
+  +6: <li>Interactive world map (clustered markers, color = impact level)</li>
+  +7: <li>Top 5 Priority Sites list (sorted by composite_priority_score)</li>
+  +8: <li>ENCORE attribution footer</li>
+  +9: </ul>
+  +10: <div class="kanban-footer">
+  +11: <span>Depends on: IMP-003 (or mock data for parallel dev)</span>
+  +12: <span>Est: 3–4 days</span>
+  +13: </div>
+  +14: </div>
+  +15: 
+  +16: <!-- CARD 5 -->
+  +17: <div class="kanban-card fe">
+  +18: <div class="kanban-header">
+  +19: <span class="kanban-id">IMP-005</span>
+  +20: <div class="kanban-tags">
+  +21: <span class="tag-pill tag-fe">Frontend</span>
+  +22: <span class="tag-pill tag-p2">Priority 2</span>
+  +23: </div>
+  +24: </div>
+
+Line 1709: <div class="kanban-title">All Sites List Screen</div>
+  +1: <div class="kanban-desc">Filterable, sortable table of all sites with TNFD Priority flag, impact level, and key pressure/dependency icon-badges.</div>
+  +2: <ul class="kanban-tasks">
+  +3: <li>Table: Site | Activity | TNFD Priority | Impact Level | 5 Pressure chips | 5 Dependency chips</li>
+  +4: <li>Search, filter, sort controls (see Section 07)</li>
+  +5: <li>Click row → navigates to site detail view</li>
+  +6: <li>Pagination</li>
+  +7: </ul>
+  +8: <div class="kanban-footer">
+  +9: <span>Depends on: IMP-003</span>
+  +10: <span>Est: 2–3 days</span>
+  +11: </div>
+  +12: </div>
+  +13: 
+  +14: <!-- CARD 6 -->
+  +15: <div class="kanban-card fe">
+  +16: <div class="kanban-header">
+  +17: <span class="kanban-id">IMP-006</span>
+  +18: <div class="kanban-tags">
+  +19: <span class="tag-pill tag-fe">Frontend</span>
+  +20: <span class="tag-pill tag-p2">Priority 2</span>
+  +21: </div>
+  +22: </div>
+  +23: <div class="kanban-title">Site Detail: Impacts Tab</div>
+  +24: <div class="kanban-desc">Site-level impact view. 12 pressure cards grouped by category, overall biodiversity pressure card, and Impact Level table showing SoN + EP breakdown per Nature Impact.</div>
+
+Line 1732: <div class="kanban-title">Site Detail: Impacts Tab</div>
+  +1: <div class="kanban-desc">Site-level impact view. 12 pressure cards grouped by category, overall biodiversity pressure card, and Impact Level table showing SoN + EP breakdown per Nature Impact.</div>
+  +2: <ul class="kanban-tasks">
+  +3: <li>12 pressure cards in 4 groups with icon + rating badge + tooltip</li>
+  +4: <li>"Hide undetected pressures" toggle</li>
+  +5: <li>Overall Pressure on Biodiversity highlight card</li>
+  +6: <li>Overall Impact Score progress bar (X.X / 10) + level badge</li>
+  +7: <li>Impact Level table: 4 rows (Water Scarcity / Pollution / Land / Biodiversity)</li>
+  +8: <li>Each row: impact level badge = SoN badge + EP badge</li>
+  +9: <li>A3 Risk Pathway handoff panel (TNFD addition — collapsible)</li>
+  +10: <li>Data confidence indicators on SoN fields</li>
+  +11: </ul>
+  +12: <div class="kanban-footer">
+  +13: <span>Depends on: IMP-003</span>
+  +14: <span>Est: 3–4 days</span>
+  +15: </div>
+  +16: </div>
+  +17: 
+  +18: <!-- CARD 7 -->
+  +19: <div class="kanban-card fe">
+  +20: <div class="kanban-header">
+  +21: <span class="kanban-id">IMP-007</span>
+  +22: <div class="kanban-tags">
+  +23: <span class="tag-pill tag-fe">Frontend</span>
+  +24: <span class="tag-pill tag-p2">Priority 2</span>
+
+Line 1759: <div class="kanban-title">Site Detail: Dependencies Tab</div>
+  +1: <div class="kanban-desc">Site-level dependency view. 25 ecosystem service dependency cards grouped by type, and Dependency Level table for 3 categories.</div>
+  +2: <ul class="kanban-tasks">
+  +3: <li>25 dependency cards in 3 groups (Provisioning / Regulating / Cultural)</li>
+  +4: <li>"Hide undetected dependencies" toggle</li>
+  +5: <li>Overall Dependency on Biodiversity highlight card</li>
+  +6: <li>Dependency Level table: 3 rows (Water / Soil / Biodiversity)</li>
+  +7: <li>Each row: dependency level badge = SoN badge + ENCORE dependency badge</li>
+  +8: <li>Link to A3: "This dependency is a potential transition risk — assess in Phase 4"</li>
+  +9: </ul>
+  +10: <div class="kanban-footer">
+  +11: <span>Depends on: IMP-003</span>
+  +12: <span>Est: 2–3 days</span>
+  +13: </div>
+  +14: </div>
+  +15: 
+  +16: <div class="callout info">
+  +17: <p><strong>Parallel development path:</strong> IMP-001 and IMP-002 can run in parallel. IMP-004 through IMP-007 can all be built simultaneously using a shared mock data JSON fixture — don't wait for backend to start UI work.</p>
+  +18: </div>
+  +19: </section>
+  +20: 
+  +21: <!-- SECTION 10: HANDOVER CHECKLIST -->
+  +22: <section id="handover">
+  +23: <div class="section-header">
+  +24: <span class="section-num">10</span>
+
+Line 1784: <h2>Handover Checklist</h2>
+  +1: </div>
+  +2: 
+  +3: <p>Everything someone needs to start building Day 1, without asking a single clarifying question.</p>
+  +4: 
+  +5: <h4>Decisions Already Made (don't revisit)</h4>
+  +6: <table>
+  +7: <thead><tr><th>Decision</th><th>Choice</th><th>Rationale</th></tr></thead>
+  +8: <tbody>
+  +9: <tr><td>Primary framework</td><td>TNFD LEAP (not CSRD)</td><td>Our differentiation from Nala</td></tr>
+  +10: <tr><td>Impact methodology</td><td>Nala's formula exactly (EP + SoN, normalized 0–10)</td><td>Defensible, documented, CSRD-compatible</td></tr>
+  +11: <tr><td>Dependency methodology</td><td>ENCORE dep × SoN matrix (Section 05)</td><td>Nala-validated approach</td></tr>
+  +12: <tr><td>GHG Emissions pressure</td><td>Excluded from this module</td><td>Routes to TCFD; prevents double-counting</td></tr>
+  +13: <tr><td>Multi-activity aggregation</td><td>MAX per pressure/dependency across activities</td><td>Conservative; matches Nala</td></tr>
+  +14: <tr><td>ENCORE attribution</td><td>CC BY-SA 4.0 — must be visible on all screens using ENCORE data</td><td>License requirement</td></tr>
+  +15: </tbody>
+  +16: </table>
+  +17: 
+  +18: <h4>Open Questions (resolve before sprint start)</h4>
+  +19: <table>
+  +20: <thead><tr><th>#</th><th>Question</th><th>Who decides</th></tr></thead>
+  +21: <tbody>
+  +22: <tr><td>1</td><td>Do we have IBAT API access or should Phase 1 use PBF static dataset?</td><td>Product lead</td></tr>
+  +23: <tr><td>2</td><td>Should "TNFD Priority" replace or sit alongside CSRD materiality flag?</td><td>Product lead</td></tr>
+  +24: <tr><td>3</td><td>What is the water_pollution_level source for MVP? (WRI doesn't provide this directly)</td><td>Data team</td></tr>

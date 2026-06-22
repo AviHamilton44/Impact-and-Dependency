@@ -1,0 +1,157 @@
+Shape: (196, 34)
+
+Columns:
+Col 0: Industry information
+Col 1: Unnamed: 1
+Col 2: Unnamed: 2
+Col 3: Ecosystem service dependencies
+Col 4: Unnamed: 4
+Col 5: Unnamed: 5
+Col 6: Unnamed: 6
+Col 7: Unnamed: 7
+Col 8: Unnamed: 8
+Col 9: Unnamed: 9
+Col 10: Unnamed: 10
+Col 11: Unnamed: 11
+Col 12: Unnamed: 12
+Col 13: Unnamed: 13
+Col 14: Unnamed: 14
+Col 15: Unnamed: 15
+Col 16: Unnamed: 16
+Col 17: Unnamed: 17
+Col 18: Unnamed: 18
+Col 19: Unnamed: 19
+Col 20: Unnamed: 20
+Col 21: Unnamed: 21
+Col 22: Unnamed: 22
+Col 23: Unnamed: 23
+Col 24: Unnamed: 24
+Col 25: Unnamed: 25
+Col 26: Unnamed: 26
+Col 27: Unnamed: 27
+Col 28: Unnamed: 28
+Col 29: Unnamed: 29
+Col 30: Unnamed: 30
+Col 31: Unnamed: 31
+Col 32: References
+Col 33: Completeness
+
+Row 0 (Header values):
+Col 0: Sector
+Col 1: Subindustry
+Col 2: Process
+Col 3: Fibres and other materials
+Col 4: Materials for agricultural use
+Col 5: Genetic materials
+Col 6: Surface water
+Col 7: Ground water
+Col 8: Plant-based resources
+Col 9: Animal-based resources
+Col 10: Animal-based energy
+Col 11: Bio-remediation
+Col 12: Filtration by organisms
+Col 13: Filtration by ecosystems
+Col 14: Dilution by atmosphere and ecosystems
+Col 15: Mediation of sensory impacts
+Col 16: Mass stabilisation and erosion control
+Col 17: Buffering and attenuation of mass flows
+Col 18: Water flow maintenance
+Col 19: Flood protection
+Col 20: Storm protection
+Col 21: Ventilation
+Col 22: Pollination
+Col 23: Maintain nursery habitats
+Col 24: Pest control
+Col 25: Disease control
+Col 26: Weathering processes
+Col 27: Decomposition and fixing processes
+Col 28: Chemical condition of freshwaters
+Col 29: Chemical condition of salt waters
+Col 30: Global climate regulation
+Col 31: Micro-climate regulation
+Col 32: References
+Col 33: Completeness
+
+Row 1:
+Col 0: Industrials
+Col 1: Airlines
+Col 2: Airport services
+Col 3: nan
+Col 4: nan
+Col 5: nan
+Col 6: Water is essential for aircraft function in terms of passenger safety and comfort, and engine or sytem processes.
+Col 7: Water is essential for aircraft function in terms of passenger safety and comfort, and engine or sytem processes.
+Col 8: nan
+Col 9: nan
+Col 10: nan
+Col 11: nan
+Col 12: nan
+Col 13: nan
+Col 14: nan
+Col 15: nan
+Col 16: nan
+Col 17: nan
+Col 18: nan
+Col 19: nan
+Col 20: nan
+Col 21: nan
+Col 22: nan
+Col 23: nan
+Col 24: nan
+Col 25: nan
+Col 26: nan
+Col 27: nan
+Col 28: nan
+Col 29: nan
+Col 30: Relative to maintanance or modification of temperature, humidity, and wind fields.
+Col 31: Relative to maintanance or modification of temperature, humidity, and wind fields.
+Col 32: Boeing. 2014. Commercial Aviation
+and the Environment.
+CDP. 2016. Emission impossible
+Which car makers are driving into trouble?
+Nissan. Ecosystem Services and the Automotive Sector. 
+Rolls Royce. 2017.
+https://www.rolls-royce.com/sustainability/approach.aspx#/
+Col 33: Amber
+
+Row 2:
+Col 0: Industrials
+Col 1: Airport Services
+Col 2: Airport services
+Col 3: nan
+Col 4: nan
+Col 5: nan
+Col 6: Water is essential for aircraft function in terms of passenger safety and comfort, and engine or sytem processes.
+Col 7: Water is essential for aircraft function in terms of passenger safety and comfort, and engine or sytem processes.
+Col 8: nan
+Col 9: nan
+Col 10: nan
+Col 11: nan
+Col 12: nan
+Col 13: nan
+Col 14: nan
+Col 15: nan
+Col 16: nan
+Col 17: nan
+Col 18: nan
+Col 19: nan
+Col 20: nan
+Col 21: nan
+Col 22: nan
+Col 23: nan
+Col 24: nan
+Col 25: nan
+Col 26: nan
+Col 27: nan
+Col 28: nan
+Col 29: nan
+Col 30: Relative to maintanance or modification of temperature, humidity, and wind fields.
+Col 31: Relative to maintanance or modification of temperature, humidity, and wind fields.
+Col 32: Boeing. 2014. Commercial Aviation
+and the Environment.
+CDP. 2016. Emission impossible
+Which car makers are driving into trouble?
+Nissan. Ecosystem Services and the Automotive Sector. 
+Rolls Royce. 2017.
+https://www.rolls-royce.com/sustainability/approach.aspx#/
+Col 33: Amber

@@ -23,26 +23,34 @@ export default function SitesList() {
     s.activities?.some(a => a.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const handleClearAll = async () => {
+  const handleClearAll = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (window.confirm("Are you sure you want to remove all pre-existing sites? This cannot be undone.")) {
       try {
         await clearSites();
         refetch();
       } catch (err) {
         console.error(err);
-        alert("Failed to clear sites.");
+        alert("Failed to clear sites: " + (err.response?.data?.detail || err.message));
       }
     }
   };
 
-  const handleDeleteSite = async (siteId) => {
+  const handleDeleteSite = async (siteId, e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (window.confirm("Are you sure you want to delete this site?")) {
       try {
         await deleteSite(siteId);
         refetch();
       } catch (err) {
         console.error(err);
-        alert("Failed to delete site.");
+        alert("Failed to delete site: " + (err.response?.data?.detail || err.message));
       }
     }
   };
@@ -157,7 +165,7 @@ export default function SitesList() {
                     <td className="px-6 py-6 text-right whitespace-nowrap">
                        <div className="flex items-center justify-end gap-2">
                           <button 
-                            onClick={() => handleDeleteSite(site.site_id)}
+                            onClick={(e) => handleDeleteSite(site.site_id, e)}
                             className="p-2.5 rounded-xl hover:bg-red-50 transition-all text-gray-300 hover:text-red-500 inline-flex items-center justify-center"
                             title="Delete Site"
                           >

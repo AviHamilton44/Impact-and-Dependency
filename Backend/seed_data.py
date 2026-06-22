@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import uuid
 import random
@@ -6,6 +7,11 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from app.database import engine, Base, SessionLocal
 from app.models.models import IndustryLeapData, Site, SiteEncoreScore, SiteSonScore
+from app.services.encore_service import get_encore_scores_for_activities
+from difflib import SequenceMatcher
+
+def similarity(a, b):
+    return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
 def seed_data():
     # Drop problematic tables from old schema manually if they exist
@@ -19,93 +25,115 @@ def seed_data():
     
     db: Session = SessionLocal()
 
-    # 1. Seed IndustryLeapData from CSV
-    csv_path = "../ACTIVITY_LEAP_DATA.csv"
-    try:
-        df = pd.read_csv(csv_path)
-        df['Activity Name'] = df['Activity Name'].ffill()
-        df['SASB CODE'] = df['SASB CODE'].ffill()
-        df['Industry'] = df['Industry'].ffill()
+    # Get paths relative to this script
+    backend_dir = os.path.dirname(os.path.abspath(__file__))
+    dep_csv_path = os.path.join(backend_dir, "ENCORE dependency materialities.csv")
+    xlsx_path = os.path.join(backend_dir, "ENCORE dependencies database.xlsx")
+    imp_csv_path = os.path.join(backend_dir, "ENCORE impacts materiality_Mar 2023_Transposed.csv")
 
-        print("Seeding IndustryLeapData...")
-        for _, row in df.iterrows():
+    # Clean rating mapping
+    rating_map = {
+        'very high': 'VH', 'vh': 'VH',
+        'high': 'H', 'h': 'H',
+        'medium': 'M', 'm': 'M',
+        'low': 'L', 'l': 'L',
+        'very low': 'VL', 'vl': 'VL',
+        'nd': 'ND', 'no dependency': 'ND', 'no impact': 'ND'
+    }
+
+    # Load Excel justifications mapping
+    print("Loading Excel justifications...")
+    df_xlsx = pd.read_excel(xlsx_path, header=None)
+    headers = [str(x).strip() for x in df_xlsx.iloc[1]]
+    process_rows = {}
+    for idx, row in df_xlsx.iloc[2:].iterrows():
+        p_name = str(row[2]).strip()
+        process_rows[p_name] = row
+
+    def get_excel_justification(process, service):
+        if process not in process_rows:
+            return None
+        row = process_rows[process]
+        best_col_idx = None
+        best_score = 0
+        for idx, h in enumerate(headers):
+            if idx < 3: continue
+            score = similarity(service, h)
+            if service.lower() in h.lower() or h.lower() in service.lower():
+                score += 0.5
+            if score > best_score:
+                best_score = score
+                best_col_idx = idx
+                
+        if best_col_idx is not None and best_score >= 0.5:
+            val = row[best_col_idx]
+            if pd.notna(val) and str(val).strip() != "" and str(val).strip().lower() != "nan":
+                return str(val).strip()
+        return None
+
+    # 1. Seed IndustryLeapData (Dependencies)
+    print("Seeding IndustryLeapData (Dependencies)...")
+    try:
+        df_dep = pd.read_csv(dep_csv_path)
+        for _, row in df_dep.iterrows():
+            process_val = str(row.get('Process', '')).strip()
+            service_val = str(row.get('Ecosystem Service', '')).strip()
+            rating_val = str(row.get('Rating', '')).strip()
+            csv_just = str(row.get('Justification', '')).strip()
+            
+            if not process_val or process_val.lower() == 'nan':
+                continue
+                
+            excel_just = get_excel_justification(process_val, service_val)
+            justification_val = excel_just if excel_just else csv_just
+            rating_clean = rating_map.get(rating_val.lower(), 'ND')
+            
             item = IndustryLeapData(
-                activity_name=str(row.get('Activity Name', '')).strip(),
-                sasb_code=str(row.get('SASB CODE', '')).strip(),
-                industry=str(row.get('Industry', '')).strip(),
-                ecosystem_service=str(row.get('Ecosystem Service', '')).strip(),
-                dependency_type=str(row.get('Dependency Type', '')).strip(),
-                impact_driver=str(row.get('Impact Driver', '')).strip(),
-                severity=str(row.get('Severity', '')).strip(),
-                impact_rating=str(row.get('Impact Rating', '')).strip()
+                activity_name=process_val,
+                sasb_code=None,
+                industry=None,
+                ecosystem_service=service_val,
+                dependency_type=None,
+                impact_driver=None,
+                severity=rating_clean,
+                impact_rating=None,
+                justification=justification_val
             )
             db.add(item)
         db.commit()
-    except FileNotFoundError:
-        print(f"CSV not found at {csv_path}, skipping industry data.")
+    except Exception as e:
+        print(f"Error seeding dependencies: {e}")
 
-    # 2. Seed Mock Sites
-    print("Seeding 10 Mock Sites...")
-    biomes = ["T1", "T2", "F1", "F2", "M1", "T8"]
-    levels = ["VL", "L", "M", "H", "VH"]
-    activities = db.query(IndustryLeapData.activity_name).distinct().all()
-    activity_names = [a[0] for a in activities] if activities else ["Agriculture", "Mining", "Energy"]
-
-    for i in range(10):
-        site_id = uuid.uuid4()
-        site_name = f"Site Alpha-{i+1}" if i < 5 else f"Project Green-{i-4}"
-        
-        # Site Metadata
-        site = Site(
-            site_id=site_id,
-            name=site_name,
-            country="India" if i % 2 == 0 else "Brazil",
-            latitude=15.0 + random.uniform(-5, 5),
-            longitude=75.0 + random.uniform(-5, 5),
-            biome_code=random.choice(biomes),
-            activities=[random.choice(activity_names)],
-            created_at=datetime.utcnow() - timedelta(days=random.randint(1, 30))
-        )
-        db.add(site)
-
-        # ENCORE Scores
-        encore = SiteEncoreScore(
-            site_id=site_id,
-            ep_water_use=random.choice(levels),
-            ep_freshwater_use=random.choice(levels),
-            ep_toxic_emissions=random.choice(levels),
-            ep_nutrient_emissions=random.choice(levels),
-            ep_disturbances=random.choice(levels),
-            ep_non_ghg_air_pollution=random.choice(levels),
-            ep_land_use=random.choice(levels),
-            ep_overall_pressure_biodiversity=random.choice(levels),
-            ep_ghg_emissions=random.choice(levels),
-            ep_solid_waste=random.choice(levels),
-            ep_other_resource_use=random.choice(levels),
-            ep_marine_pollution=random.choice(levels),
-            dep_water_supply=random.choice(levels),
-            dep_soil_sediment_retention=random.choice(levels),
-            dep_overall_dependency_biodiversity=random.choice(levels),
-            dep_flood_and_storm_protection=random.choice(levels),
-            dep_pollination=random.choice(levels),
-            dep_pest_control=random.choice(levels),
-            dep_climate_regulation=random.choice(levels)
-        )
-        db.add(encore)
-
-        # SoN Scores (Usually from SoN module, but we mock it here)
-        son = SiteSonScore(
-            site_id=site_id,
-            dim1_extent_level=random.choice(levels),
-            dim2_freshwater_level=random.choice(levels),
-            dim2_terrestrial_level=random.choice(levels),
-            dim3_population_level=random.choice(levels),
-            dim4_extinction_level=random.choice(levels),
-            biome_code=site.biome_code,
-            data_confidence=random.choice(['low', 'medium', 'high']),
-            measured_metrics_count=random.randint(0, 5)
-        )
-        db.add(son)
+    # 2. Seed IndustryLeapData (Impacts)
+    print("Seeding IndustryLeapData (Impacts)...")
+    try:
+        df_imp = pd.read_csv(imp_csv_path)
+        for _, row in df_imp.iterrows():
+            process_val = str(row.get('Production process', '')).strip()
+            driver_val = str(row.get('Impact driver', '')).strip()
+            rating_val = str(row.get('Rating', '')).strip()
+            sub_ind_val = str(row.get('Sub-Industry', '')).strip()
+            
+            if not process_val or process_val.lower() == 'nan':
+                continue
+                
+            rating_clean = rating_map.get(rating_val.lower(), 'ND')
+            
+            item = IndustryLeapData(
+                activity_name=process_val,
+                sasb_code=None,
+                industry=sub_ind_val,
+                ecosystem_service=None,
+                dependency_type=None,
+                impact_driver=driver_val,
+                severity=None,
+                impact_rating=rating_clean,
+                justification=None
+            )
+            db.add(item)
+        db.commit()
+    except Exception as e:
+        print(f"Error seeding impacts: {e}")
 
     db.commit()
     print("Seeding completed successfully.")

@@ -1,0 +1,320 @@
+892:   <section id="datamodel">
+893:     <div class="section-header">
+894:       <span class="section-num">04</span>
+895:       <h2>Data Model</h2>
+896:     </div>
+897: 
+898:     <p>Three tables. Everything else is computed. No subsheets, no redundancy.</p>
+899: 
+900:     <!-- TABLE 1 -->
+901:     <div class="schema-block">
+902:       <div class="schema-header">
+903:         <span class="schema-table-name">sites</span>
+904:         <span class="schema-desc">Exists in L1 — reference only, no new columns needed</span>
+905:       </div>
+906:       <div class="schema-fields">
+907:         <div class="schema-field">
+908:           <span class="sf-name pk">site_id</span>
+909:           <span class="sf-type">UUID / PK</span>
+910:           <span class="sf-note">Primary key from L1</span>
+911:         </div>
+912:         <div class="schema-field">
+913:           <span class="sf-name">name, country</span>
+914:           <span class="sf-type">VARCHAR</span>
+915:           <span class="sf-note">Display fields</span>
+916:         </div>
+917:         <div class="schema-field">
+918:           <span class="sf-name">latitude, longitude</span>
+919:           <span class="sf-type">DECIMAL</span>
+920:           <span class="sf-note">Required for State of Nature API lookups</span>
+921:         </div>
+922:         <div class="schema-field">
+923:           <span class="sf-name">biome_code</span>
+924:           <span class="sf-type">VARCHAR</span>
+925:           <span class="sf-note">TNFD biome classification (T1–T8, F1–F4, M1–M4)</span>
+926:         </div>
+927:         <div class="schema-field">
+928:           <span class="sf-name">activities</span>
+929:           <span class="sf-type">JSON[]</span>
+930:           <span class="sf-note">Array of {activity_id, sasb_isic_code, name}</span>
+931:         </div>
+932:       </div>
+933:     </div>
+934: 
+935:     <!-- TABLE 2 -->
+936:     <div class="schema-block">
+937:       <div class="schema-header">
+938:         <span class="schema-table-name">site_encore_scores</span>
+939:         <span class="schema-desc">Populated by ENCORE API ingestion job — one row per site (MAX across activities)</span>
+940:       </div>
+941:       <div class="schema-fields">
+942:         <div class="schema-field">
+943:           <span class="sf-name pk">score_id</span>
+944:           <span class="sf-type">UUID / PK</span>
+945:           <span class="sf-note"></span>
+946:         </div>
+947:         <div class="schema-field">
+948:           <span class="sf-name fk">site_id</span>
+949:           <span class="sf-type">UUID / FK</span>
+950:           <span class="sf-note">→ sites.site_id</span>
+951:         </div>
+952:         <div class="schema-field">
+953:           <span class="sf-name">encore_refreshed_at</span>
+954:           <span class="sf-type">TIMESTAMP</span>
+955:           <span class="sf-note">Last sync from ENCORE</span>
+956:         </div>
+957:         <div class="schema-field" style="background:rgba(56,189,248,0.03)">
+958:           <span class="sf-name" style="color:var(--accent2); font-size:10px; text-transform:uppercase; letter-spacing:0.05em">— 12 Environmental Pressures —</span>
+959:           <span class="sf-type"></span>
+960:           <span class="sf-note">All: ENUM('VL','L','M','H','VH') — MAX across all site activities</span>
+961:         </div>
+962:         <div class="schema-field">
+963:           <span class="sf-name">ep_freshwater_use</span>
+964:           <span class="sf-type">ENUM</span>
+965:           <span class="sf-note">Land &amp; Water Use Change category</span>
+966:         </div>
+967:         <div class="schema-field">
+968:           <span class="sf-name">ep_water_use</span>
+969:           <span class="sf-type">ENUM</span>
+970:           <span class="sf-note">Resource Use category</span>
+971:         </div>
+972:         <div class="schema-field">
+973:           <span class="sf-name">ep_land_use</span>
+974:           <span class="sf-type">ENUM</span>
+975:           <span class="sf-note">Land &amp; Water Use Change category</span>
+976:         </div>
+977:         <div class="schema-field">
+978:           <span class="sf-name">ep_toxic_emissions</span>
+979:           <span class="sf-type">ENUM</span>
+980:           <span class="sf-note">Pollution category</span>
+981:         </div>
+982:         <div class="schema-field">
+983:           <span class="sf-name">ep_non_ghg_air_pollution</span>
+984:           <span class="sf-type">ENUM</span>
+985:           <span class="sf-note">Pollution category</span>
+986:         </div>
+987:         <div class="schema-field">
+988:           <span class="sf-name">ep_nutrient_emissions</span>
+989:           <span class="sf-type">ENUM</span>
+990:           <span class="sf-note">Pollution category</span>
+991:         </div>
+992:         <div class="schema-field">
+993:           <span class="sf-name">ep_solid_waste</span>
+994:           <span class="sf-type">ENUM</span>
+995:           <span class="sf-note">Pollution category</span>
+996:         </div>
+997:         <div class="schema-field">
+998:           <span class="sf-name">ep_disturbances</span>
+999:           <span class="sf-type">ENUM</span>
+1000:           <span class="sf-note">Other Pressures category</span>
+1001:         </div>
+1002:         <div class="schema-field">
+1003:           <span class="sf-name">ep_overall_pressure_biodiversity</span>
+1004:           <span class="sf-type">ENUM</span>
+1005:           <span class="sf-note">ENCORE computed — Species + Structural/Biotic Integrity max</span>
+1006:         </div>
+1007:         <div class="schema-field" style="background:rgba(74,222,128,0.03)">
+1008:           <span class="sf-name" style="color:var(--accent); font-size:10px; text-transform:uppercase; letter-spacing:0.05em">— 25 Ecosystem Service Dependencies —</span>
+1009:           <span class="sf-type"></span>
+1010:           <span class="sf-note">All: ENUM('VL','L','M','H','VH') — MAX across all site activities</span>
+1011:         </div>
+1012:         <div class="schema-field">
+1013:           <span class="sf-name">dep_water_supply</span>
+1014:           <span class="sf-type">ENUM</span>
+1015:           <span class="sf-note">Provisioning</span>
+1016:         </div>
+1017:         <div class="schema-field">
+1018:           <span class="sf-name">dep_biomass_provisioning</span>
+1019:           <span class="sf-type">ENUM</span>
+1020:           <span class="sf-note">Provisioning</span>
+1021:         </div>
+1022:         <div class="schema-field">
+1023:           <span class="sf-name">dep_animal_based_energy</span>
+1024:           <span class="sf-type">ENUM</span>
+1025:           <span class="sf-note">Provisioning</span>
+1026:         </div>
+1027:         <div class="schema-field">
+1028:           <span class="sf-name">dep_genetic_material</span>
+1029:           <span class="sf-type">ENUM</span>
+1030:           <span class="sf-note">Provisioning</span>
+1031:         </div>
+1032:         <div class="schema-field">
+1033:           <span class="sf-name">dep_soil_sediment_retention</span>
+1034:           <span class="sf-type">ENUM</span>
+1035:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1036:         </div>
+1037:         <div class="schema-field">
+1038:           <span class="sf-name">dep_water_purification</span>
+1039:           <span class="sf-type">ENUM</span>
+1040:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1041:         </div>
+1042:         <div class="schema-field">
+1043:           <span class="sf-name">dep_water_flow_regulation</span>
+1044:           <span class="sf-type">ENUM</span>
+1045:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1046:         </div>
+1047:         <div class="schema-field">
+1048:           <span class="sf-name">dep_solid_waste_remediation</span>
+1049:           <span class="sf-type">ENUM</span>
+1050:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1051:         </div>
+1052:         <div class="schema-field">
+1053:           <span class="sf-name">dep_global_climate_regulation</span>
+1054:           <span class="sf-type">ENUM</span>
+1055:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1056:         </div>
+1057:         <div class="schema-field">
+1058:           <span class="sf-name">dep_rainfall_pattern_regulation</span>
+1059:           <span class="sf-type">ENUM</span>
+1060:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1061:         </div>
+1062:         <div class="schema-field">
+1063:           <span class="sf-name">dep_noise_attenuation</span>
+1064:           <span class="sf-type">ENUM</span>
+1065:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1066:         </div>
+1067:         <div class="schema-field">
+1068:           <span class="sf-name">dep_pollination</span>
+1069:           <span class="sf-type">ENUM</span>
+1070:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1071:         </div>
+1072:         <div class="schema-field">
+1073:           <span class="sf-name">dep_nursery_population_maintenance</span>
+1074:           <span class="sf-type">ENUM</span>
+1075:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1076:         </div>
+1077:         <div class="schema-field">
+1078:           <span class="sf-name">dep_flood_control</span>
+1079:           <span class="sf-type">ENUM</span>
+1080:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1081:         </div>
+1082:         <div class="schema-field">
+1083:           <span class="sf-name">dep_storm_mitigation</span>
+1084:           <span class="sf-type">ENUM</span>
+1085:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1086:         </div>
+1087:         <div class="schema-field">
+1088:           <span class="sf-name">dep_dilution_by_ecosystems</span>
+1089:           <span class="sf-type">ENUM</span>
+1090:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1091:         </div>
+1092:         <div class="schema-field">
+1093:           <span class="sf-name">dep_local_climate_regulation</span>
+1094:           <span class="sf-type">ENUM</span>
+1095:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1096:         </div>
+1097:         <div class="schema-field">
+1098:           <span class="sf-name">dep_mediation_sensory_impacts</span>
+1099:           <span class="sf-type">ENUM</span>
+1100:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1101:         </div>
+1102:         <div class="schema-field">
+1103:           <span class="sf-name">dep_air_filtration</span>
+1104:           <span class="sf-type">ENUM</span>
+1105:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1106:         </div>
+1107:         <div class="schema-field">
+1108:           <span class="sf-name">dep_soil_quality_regulation</span>
+1109:           <span class="sf-type">ENUM</span>
+1110:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1111:         </div>
+1112:         <div class="schema-field">
+1113:           <span class="sf-name">dep_biological_control</span>
+1114:           <span class="sf-type">ENUM</span>
+1115:           <span class="sf-note">Regulating &amp; Maintenance</span>
+1116:         </div>
+1117:         <div class="schema-field">
+1118:           <span class="sf-name">dep_recreation_services</span>
+1119:           <span class="sf-type">ENUM</span>
+1120:           <span class="sf-note">Cultural</span>
+1121:         </div>
+1122:         <div class="schema-field">
+1123:           <span class="sf-name">dep_visual_amenity</span>
+1124:           <span class="sf-type">ENUM</span>
+1125:           <span class="sf-note">Cultural</span>
+1126:         </div>
+1127:         <div class="schema-field">
+1128:           <span class="sf-name">dep_education_scientific</span>
+1129:           <span class="sf-type">ENUM</span>
+1130:           <span class="sf-note">Cultural</span>
+1131:         </div>
+1132:         <div class="schema-field">
+1133:           <span class="sf-name">dep_spiritual_artistic</span>
+1134:           <span class="sf-type">ENUM</span>
+1135:           <span class="sf-note">Cultural</span>
+1136:         </div>
+1137:         <div class="schema-field">
+1138:           <span class="sf-name">dep_overall_dependency_biodiversity</span>
+1139:           <span class="sf-type">ENUM</span>
+1140:           <span class="sf-note">ENCORE computed — Species + Structural/Biotic Integrity max</span>
+1141:         </div>
+1142:       </div>
+1143:     </div>
+1144: 
+1145:     <!-- TABLE 3 -->
+1146:     <div class="schema-block">
+1147:       <div class="schema-header">
+1148:         <span class="schema-table-name">site_state_of_nature</span>
+1149:         <span class="schema-desc">Populated by WRI Aqueduct + IBAT spatial lookups — one row per site</span>
+1150:       </div>
+1151:       <div class="schema-fields">
+1152:         <div class="schema-field">
+1153:           <span class="sf-name pk">son_id</span>
+1154:           <span class="sf-type">UUID / PK</span>
+1155:           <span class="sf-note"></span>
+1156:         </div>
+1157:         <div class="schema-field">
+1158:           <span class="sf-name fk">site_id</span>
+1159:           <span class="sf-type">UUID / FK</span>
+1160:           <span class="sf-note">→ sites.site_id</span>
+1161:         </div>
+1162:         <div class="schema-field">
+1163:           <span class="sf-name">water_scarcity_raw</span>
+1164:           <span class="sf-type">DECIMAL</span>
+1165:           <span class="sf-note">WRI Aqueduct baseline water stress score (0–5)</span>
+1166:         </div>
+1167:         <div class="schema-field">
+1168:           <span class="sf-name">water_scarcity_level</span>
+1169:           <span class="sf-type">ENUM</span>
+1170:           <span class="sf-note">Bucketed: &lt;1=VL, 1–2=L, 2–3=M, 3–4=H, &gt;4=VH</span>
+1171:         </div>
+1172:         <div class="schema-field">
+1173:           <span class="sf-name">land_degradation_level</span>
+1174:           <span class="sf-type">ENUM</span>
+1175:           <span class="sf-note">From BII: &gt;80%=VL, 60–80%=L, 40–60%=M, 20–40%=H, &lt;20%=VH</span>
+1176:         </div>
+1177:         <div class="schema-field">
+1178:           <span class="sf-name">water_pollution_level</span>
+1179:           <span class="sf-type">ENUM</span>
+1180:           <span class="sf-note">Proxy from water quality index or BII for aquatic systems</span>
+1181:         </div>
+1182:         <div class="schema-field">
+1183:           <span class="sf-name">msa_score</span>
+1184:           <span class="sf-type">DECIMAL</span>
+1185:           <span class="sf-note">Mean Species Abundance (0–1, from IBAT)</span>
+1186:         </div>
+1187:         <div class="schema-field">
+1188:           <span class="sf-name">bii_score</span>
+1189:           <span class="sf-type">DECIMAL</span>
+1190:           <span class="sf-note">Biodiversity Intactness Index (0–1, from IBAT / PBF)</span>
+1191:         </div>
+1192:         <div class="schema-field">
+1193:           <span class="sf-name">biodiversity_loss_level</span>
+1194:           <span class="sf-type">ENUM</span>
+1195:           <span class="sf-note">min(MSA, BII) bucketed using Nala's thresholds (see computed logic)</span>
+1196:         </div>
+1197:         <div class="schema-field">
+1198:           <span class="sf-name">son_refreshed_at</span>
+1199:           <span class="sf-type">TIMESTAMP</span>
+1200:           <span class="sf-note">Last spatial data sync</span>
+1201:         </div>
+1202:         <div class="schema-field">
+1203:           <span class="sf-name">data_confidence</span>
+1204:           <span class="sf-type">ENUM('high','medium','low')</span>
+1205:           <span class="sf-note">Data quality flag — affects UI display</span>
+1206:         </div>
+1207:       </div>
+1208:     </div>
+1209:   </section>
+1210: 
+1211:   <!-- SECTION 5: COMPUTED LOGIC -->

@@ -101,8 +101,10 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
     water_dep = get_matrix_score(s('dim2_freshwater_level'), e('dep_water_supply'))
     soil_dep = get_matrix_score(s('dim1_extent_level'), e('dep_soil_sediment_retention'))
     biodiv_dep = get_matrix_score(s('dim2_terrestrial_level'), e('dep_overall_dependency_biodiversity'))
+    climate_dep = get_matrix_score(s('dim2_terrestrial_level'), e('dep_climate_regulation'))
+    pollin_dep = get_matrix_score(s('dim2_terrestrial_level'), e('dep_pollination'))
 
-    dependency_risk_score = max(water_dep, soil_dep, biodiv_dep)
+    dependency_risk_score = max(water_dep, soil_dep, biodiv_dep, climate_dep, pollin_dep)
 
     # ----------------------------------------------------
     # COMPOSITE PRIORITY SCORE
@@ -135,7 +137,9 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
         "dependency_breakdown": {
             "water": num_to_enum(water_dep),
             "soil": num_to_enum(soil_dep),
-            "biodiversity": num_to_enum(biodiv_dep)
+            "biodiversity": num_to_enum(biodiv_dep),
+            "climate": num_to_enum(climate_dep),
+            "pollination": num_to_enum(pollin_dep)
         },
         "data_quality": {
             "confidence": son_obj.data_confidence or 'medium',
