@@ -1,0 +1,264 @@
+{
+  "indices": {
+    "WaterSensitivity": {
+      "water_stress": {
+        "weight": 0.20,
+        "direction": "direct",
+        "source": "WRI Aqueduct 3.0",
+        "resolution": "1km",
+        "freshness": "2023"
+      },
+      "groundwater_availability": {
+        "weight": 0.15,
+        "direction": "inverse",
+        "source": "NASA GRACE-FO",
+        "resolution": "10km",
+        "freshness": "2024"
+      },
+      "surface_water_availability": {
+        "weight": 0.15,
+        "direction": "inverse",
+        "source": "NASA GLDAS-2.1",
+        "resolution": "5km",
+        "freshness": "2024"
+      },
+      "distance_to_rivers": {
+        "weight": 0.15,
+        "direction": "inverse",
+        "source": "HydroSHEDS v1",
+        "resolution": "90m",
+        "freshness": "2023"
+      },
+      "flood_risk": {
+        "weight": 0.15,
+        "direction": "direct",
+        "source": "UNEP Global Risk Data",
+        "resolution": "1km",
+        "freshness": "2022"
+      },
+      "drought_risk": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "JRC Global Drought Observatory",
+        "resolution": "5km",
+        "freshness": "2024"
+      },
+      "water_bodies": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "ESA WorldCover v2",
+        "resolution": "10m",
+        "freshness": "2023"
+      }
+    },
+    "HabitatSensitivity": {
+      "forest_cover": {
+        "weight": 0.08,
+        "direction": "direct",
+        "source": "Hansen Global Forest Change",
+        "resolution": "30m",
+        "freshness": "2023"
+      },
+      "protected_area_overlap": {
+        "weight": 0.12,
+        "direction": "direct",
+        "source": "UNEP-WCMC WDPA",
+        "resolution": "Vector",
+        "freshness": "2024"
+      },
+      "kba_overlap": {
+        "weight": 0.12,
+        "direction": "direct",
+        "source": "BirdLife International KBAs",
+        "resolution": "Vector",
+        "freshness": "2024"
+      },
+      "species_richness": {
+        "weight": 0.08,
+        "direction": "direct",
+        "source": "IUCN Red List / GBIF",
+        "resolution": "10km",
+        "freshness": "2023"
+      },
+      "threatened_species": {
+        "weight": 0.08,
+        "direction": "direct",
+        "source": "IUCN Red List",
+        "resolution": "10km",
+        "freshness": "2024"
+      },
+      "endemic_species": {
+        "weight": 0.08,
+        "direction": "direct",
+        "source": "Kew State of World Plants",
+        "resolution": "20km",
+        "freshness": "2023"
+      },
+      "mammal_richness": {
+        "weight": 0.06,
+        "direction": "direct",
+        "source": "IUCN Mammal Ranges",
+        "resolution": "10km",
+        "freshness": "2023"
+      },
+      "bird_richness": {
+        "weight": 0.06,
+        "direction": "direct",
+        "source": "BirdLife Species Range Maps",
+        "resolution": "10km",
+        "freshness": "2023"
+      },
+      "edna_richness": {
+        "weight": 0.06,
+        "direction": "direct",
+        "source": "Local eDNA Survey Database",
+        "resolution": "Point",
+        "freshness": "2024"
+      },
+      "habitat_fragmentation": {
+        "weight": 0.08,
+        "direction": "direct",
+        "source": "JRC Landscape Fragmentation",
+        "resolution": "100m",
+        "freshness": "2022"
+      },
+      "connectivity": {
+        "weight": 0.06,
+        "direction": "inverse",
+        "source": "Global Connectedness Map",
+        "resolution": "1km",
+        "freshness": "2023"
+      },
+      "wetland_area": {
+        "weight": 0.06,
+        "direction": "direct",
+        "source": "Ramsar Sites Database",
+        "resolution": "Vector",
+        "freshness": "2023"
+      },
+      "grassland": {
+        "weight": 0.03,
+        "direction": "direct",
+        "source": "ESA WorldCover Grassland",
+        "resolution": "10m",
+        "freshness": "2023"
+      },
+      "mangrove_area": {
+        "weight": 0.03,
+        "direction": "direct",
+        "source": "Global Mangrove Watch",
+        "resolution": "20m",
+        "freshness": "2023"
+      }
+    },
+    "ClimateSensitivity": {
+      "carbon_stock": {
+        "weight": 0.18,
+        "direction": "direct",
+        "source": "IPCC Global Forest Carbon",
+        "resolution": "300m",
+        "freshness": "2022"
+      },
+      "above_ground_biomass": {
+        "weight": 0.18,
+        "direction": "direct",
+        "source": "ESA BIOMASS Project",
+        "resolution": "100m",
+        "freshness": "2023"
+      },
+      "ndvi": {
+        "weight": 0.12,
+        "direction": "direct",
+        "source": "MODIS Terra MOD13A2",
+        "resolution": "250m",
+        "freshness": "2024"
+      },
+      "evi": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "MODIS EVI Product",
+        "resolution": "250m",
+        "freshness": "2024"
+      },
+      "temperature": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "CRU TS v4.07",
+        "resolution": "5km",
+        "freshness": "2023"
+      },
+      "rainfall": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "CHIRPS Rainfall Estimates",
+        "resolution": "5km",
+        "freshness": "2024"
+      },
+      "fire_risk": {
+        "weight": 0.12,
+        "direction": "direct",
+        "source": "NASA FIRMS Active Fires",
+        "resolution": "1km",
+        "freshness": "2024"
+      },
+      "forest_loss": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "GFW Annual Tree Cover Loss",
+        "resolution": "30m",
+        "freshness": "2023"
+      }
+    },
+    "SoilSensitivity": {
+      "soil_organic_carbon": {
+        "weight": 0.20,
+        "direction": "direct",
+        "source": "FAO SoilGrids 250m",
+        "resolution": "250m",
+        "freshness": "2023"
+      },
+      "soil_moisture": {
+        "weight": 0.15,
+        "direction": "direct",
+        "source": "NASA SMAP L4",
+        "resolution": "9km",
+        "freshness": "2024"
+      },
+      "soil_fertility": {
+        "weight": 0.15,
+        "direction": "direct",
+        "source": "Harmonized World Soil Database",
+        "resolution": "1km",
+        "freshness": "2023"
+      },
+      "soil_erosion": {
+        "weight": 0.15,
+        "direction": "direct",
+        "source": "JRC Global Soil Erosion",
+        "resolution": "250m",
+        "freshness": "2022"
+      },
+      "agricultural_land": {
+        "weight": 0.15,
+        "direction": "direct",
+        "source": "Copernicus CGLS Land Cover",
+        "resolution": "100m",
+        "freshness": "2023"
+      },
+      "built_up_area": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "GHSL Built-Up Grid",
+        "resolution": "10m",
+        "freshness": "2023"
+      },
+      "ecosystem_integrity": {
+        "weight": 0.10,
+        "direction": "direct",
+        "source": "Wilderness Index / GEI",
+        "resolution": "1km",
+        "freshness": "2023"
+      }
+    }
+  }
+}

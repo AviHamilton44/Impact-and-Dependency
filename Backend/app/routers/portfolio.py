@@ -2,8 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
 from app.models.models import Site, SiteEncoreScore, SiteSonScore
-from app.services.computation_service import calculate_tnfd_outputs, num_to_enum, enum_to_num
+from app.services.computation_service import calculate_tnfd_outputs
 from typing import List, Dict, Any
+
+def enum_to_num(val: str) -> int:
+    return {"VL": 1, "L": 2, "M": 3, "H": 4, "VH": 5}.get(val, 1)
 
 router = APIRouter(tags=["Portfolio"])
 
@@ -116,12 +119,12 @@ def get_portfolio_overview(db: Session = Depends(get_db)):
             ib = out["impact_breakdown"]
             db_breakdown = out["dependency_breakdown"]
             
-            # Map impact pair score (2-10) to 1-5 scale
-            impact_totals["Extent Loss"] += ib["extent"]["score"] / 2.0
-            impact_totals["Freshwater Condition"] += ib["freshwater"]["score"] / 2.0
-            impact_totals["Terrestrial Condition"] += ib["terrestrial"]["score"] / 2.0
-            impact_totals["Species Populations"] += ib["population"]["score"] / 2.0
-            impact_totals["Extinction Risk"] += ib["extinction"]["score"] / 2.0
+            # Map impact score (0-100) to 0-5 scale
+            impact_totals["Extent Loss"] += ib["extent"]["score"] / 20.0
+            impact_totals["Freshwater Condition"] += ib["freshwater"]["score"] / 20.0
+            impact_totals["Terrestrial Condition"] += ib["terrestrial"]["score"] / 20.0
+            impact_totals["Species Populations"] += ib["population"]["score"] / 20.0
+            impact_totals["Extinction Risk"] += ib["extinction"]["score"] / 20.0
             
             dependency_totals["Water Supply"] += enum_to_num(db_breakdown.get("water", "VL"))
             dependency_totals["Soil Retention"] += enum_to_num(db_breakdown.get("soil", "VL"))

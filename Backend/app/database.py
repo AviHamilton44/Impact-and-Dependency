@@ -6,9 +6,21 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/tnfd_dashboard")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./tnfd_local.db")
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+try:
+    if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+        engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+    else:
+        engine = create_engine(SQLALCHEMY_DATABASE_URL)
+    # Test connection
+    conn = engine.connect()
+    conn.close()
+except Exception as e:
+    print(f"Database connection failed: {e}. Falling back to SQLite...")
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./tnfd_local.db"
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

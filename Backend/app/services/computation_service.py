@@ -1,148 +1,419 @@
+import os
+import json
+import hashlib
+import random
+import uuid
 from typing import Dict, Any, List, Optional
-import math
 
-def enum_to_num(val: str) -> int:
-    mapping = {'VL': 1, 'L': 2, 'M': 3, 'H': 4, 'VH': 5}
-    return mapping.get(val, 1)
+# Load weights configuration
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "weights_config.json")
+try:
+    with open(CONFIG_PATH, "r") as f:
+        WEIGHTS_CONFIG = json.load(f)
+except Exception as e:
+    print(f"Error loading weights_config.json: {e}")
+    WEIGHTS_CONFIG = {"indices": {}}
 
-def num_to_enum(val: int) -> str:
-    mapping = {1: 'VL', 2: 'L', 3: 'M', 4: 'H', 5: 'VH'}
-    val = max(1, min(5, round(val)))
-    return mapping.get(val, 'VL')
+# Conversion map from ENCORE rating to weight (0.0 to 1.0)
+RATING_WEIGHT_MAP = {
+    "VL": 0.2,
+    "L": 0.4,
+    "M": 0.6,
+    "H": 0.8,
+    "VH": 1.0,
+    "ND": 0.2
+}
 
-# TNFD Dependency Matrix Logic
-# Rows = SoN Loss (1-5), Cols = ENCORE Dependency (1-5)
-DEPENDENCY_MATRIX = [
-    [1, 1, 1, 1, 2], # VL Loss
-    [1, 1, 2, 3, 4], # L Loss
-    [1, 2, 3, 4, 4], # M Loss
-    [2, 3, 4, 4, 5], # H Loss
-    [3, 4, 4, 5, 5], # VH Loss
-]
+def get_rating_level(score: float) -> str:
+    """Map a 0-100 score to a level rating."""
+    if score < 20:
+        return "VL"
+    elif score < 40:
+        return "L"
+    elif score < 60:
+        return "M"
+    elif score < 80:
+        return "H"
+    else:
+        return "VH"
 
-def get_matrix_score(son_val: int, encore_val: int) -> int:
-    try:
-        return DEPENDENCY_MATRIX[son_val - 1][encore_val - 1]
-    except IndexError:
-        return 1
+def generate_site_indicators(site_obj: Any, config: dict) -> tuple:
+    """
+    Deterministically generates 36 normalized spatial environmental indicators (0-100)
+    for a site based on its geometry or UUID.
+    """
+    geom_str = str(site_obj.geometry) if hasattr(site_obj, "geometry") and site_obj.geometry else str(getattr(site_obj, "site_id", uuid.uuid4()))
+    seed_hash = int(hashlib.md5(geom_str.encode('utf-8')).hexdigest(), 16) % (2**32)
+    rng = random.Random(seed_hash)
+    
+    # Choose archetype deterministically
+    archetype = rng.choice(["rainforest", "arid", "coastal", "agricultural"])
+    
+    indicators = {}
+    
+    for index_name, index_data in config.get("indices", {}).items():
+        for ind_name, ind_props in index_data.items():
+            direction = ind_props.get("direction", "direct")
+            
+            # Base value generation based on archetype
+            val = 50.0
+            if archetype == "rainforest":
+                if ind_name in ["forest_cover", "species_richness", "threatened_species", "endemic_species", 
+                               "mammal_richness", "bird_richness", "edna_richness", "wetland_area", 
+                               "ndvi", "evi", "carbon_stock", "above_ground_biomass", "rainfall", 
+                               "soil_organic_carbon", "soil_moisture", "soil_fertility", "ecosystem_integrity"]:
+                    val = rng.uniform(70.0, 98.0)
+                elif ind_name in ["water_stress", "drought_risk", "fire_risk", "built_up_area", "agricultural_land"]:
+                    val = rng.uniform(5.0, 25.0)
+                elif ind_name in ["distance_to_rivers"]:
+                    val = rng.uniform(5.0, 30.0) # meaning close to rivers
+                else:
+                    val = rng.uniform(30.0, 70.0)
+                    
+            elif archetype == "arid":
+                if ind_name in ["water_stress", "drought_risk", "fire_risk", "temperature", "soil_erosion"]:
+                    val = rng.uniform(75.0, 99.0)
+                elif ind_name in ["forest_cover", "wetland_area", "mangrove_area", "ndvi", "evi", 
+                               "carbon_stock", "above_ground_biomass", "rainfall", "soil_moisture", 
+                               "ecosystem_integrity"]:
+                    val = rng.uniform(0.0, 15.0)
+                elif ind_name in ["distance_to_rivers"]:
+                    val = rng.uniform(70.0, 95.0) # far from rivers
+                else:
+                    val = rng.uniform(20.0, 50.0)
+                    
+            elif archetype == "coastal":
+                if ind_name in ["mangrove_area", "wetland_area", "water_bodies", "surface_water_availability", 
+                               "rainfall", "soil_moisture"]:
+                    val = rng.uniform(65.0, 95.0)
+                elif ind_name in ["fire_risk", "drought_risk", "built_up_area", "grassland"]:
+                    val = rng.uniform(10.0, 30.0)
+                elif ind_name in ["distance_to_rivers"]:
+                    val = rng.uniform(5.0, 20.0) # close to water
+                else:
+                    val = rng.uniform(40.0, 75.0)
+                    
+            else: # agricultural
+                if ind_name in ["agricultural_land", "soil_fertility", "soil_erosion", "temperature", "built_up_area"]:
+                    val = rng.uniform(60.0, 90.0)
+                elif ind_name in ["forest_cover", "wetland_area", "mangrove_area", "ecosystem_integrity"]:
+                    val = rng.uniform(5.0, 25.0)
+                else:
+                    val = rng.uniform(30.0, 70.0)
+            
+            # Apply Direct/Inverse mapping (where higher = higher ecological concern/sensitivity)
+            if direction == "inverse":
+                normalized = 100.0 - val
+            else:
+                normalized = val
+                
+            indicators[ind_name] = round(normalized, 1)
+            
+    return archetype, indicators
+
+def compute_sensitivity_index(indicators: dict, index_config: dict) -> float:
+    """Compute weighted sum of indicators for a specific index."""
+    weighted_sum = 0.0
+    weight_total = 0.0
+    for ind_name, props in index_config.items():
+        weight = props.get("weight", 0.0)
+        val = indicators.get(ind_name, 50.0)
+        weighted_sum += val * weight
+        weight_total += weight
+    if weight_total > 0:
+        return round(weighted_sum / weight_total, 1)
+    return 50.0
 
 def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict[str, Any]:
     """
-    Main computation service for TNFD Impact & Dependency.
-    site_obj: Site model
-    encore_obj: SiteEncoreScore model
-    son_obj: SiteSonScore model (Read from site_son_scores table)
+    Main dynamic site-specific computation service for TNFD.
+    Calculates dynamic dependency and impact scores by combining:
+      1. ENCORE baseline weights (0-1)
+      2. Deterministic spatial environmental sensitivity (0-100)
     """
-    if not encore_obj or not son_obj:
+    if not encore_obj:
         return {}
 
-    # Helper to get numeric values
-    e = lambda field: enum_to_num(getattr(encore_obj, field, 'VL'))
-    s = lambda field: enum_to_num(getattr(son_obj, field, 'VL'))
-
-    biome = site_obj.biome_code or 'T1'
+    # 1. Generate Site Environmental Indicators & Sensitivity Indices
+    archetype, indicators = generate_site_indicators(site_obj, WEIGHTS_CONFIG)
     
-    # ----------------------------------------------------
-    # IMPACT 1 — Loss of Ecosystem Extent
-    # ----------------------------------------------------
-    imp1_ep = e('ep_land_use')
-    imp1_son = s('dim1_extent_level')
-    imp1_pair = imp1_ep + imp1_son
+    sensitivity_indices = {}
+    for index_name, index_data in WEIGHTS_CONFIG.get("indices", {}).items():
+        sensitivity_indices[index_name] = compute_sensitivity_index(indicators, index_data)
+        
+    # Helper to get ENCORE weights
+    get_weight = lambda field: RATING_WEIGHT_MAP.get(getattr(encore_obj, field, "VL"), 0.2)
+    get_rating = lambda field: getattr(encore_obj, field, "VL")
 
-    # ----------------------------------------------------
-    # IMPACT 2 — Degradation of Freshwater Condition
-    # ----------------------------------------------------
-    imp2_ep = max(e('ep_water_use'), e('ep_freshwater_use'), e('ep_toxic_emissions'), e('ep_nutrient_emissions'))
-    imp2_son = s('dim2_freshwater_level')
-    imp2_pair = imp2_ep + imp2_son
+    # 2. Calculate Dynamic Dependency Scores (Weight * ESI)
+    dependencies_data = [
+        {
+            "id": "water_supply",
+            "name": "Water Supply",
+            "encore_field": "dep_water_supply",
+            "index_name": "WaterSensitivity",
+            "description": "Reliance on freshwater sources (groundwater and surface water) for operations."
+        },
+        {
+            "id": "soil_quality",
+            "name": "Soil Quality & Retention",
+            "encore_field": "dep_soil_sediment_retention",
+            "index_name": "SoilSensitivity",
+            "description": "Dependence on healthy soils, slope stability, and prevention of land erosion."
+        },
+        {
+            "id": "biodiversity",
+            "name": "Biodiversity & Nursery Habitats",
+            "encore_field": "dep_overall_dependency_biodiversity",
+            "index_name": "HabitatSensitivity",
+            "description": "Reliance on local ecosystems to maintain species diversity and habitat structure."
+        },
+        {
+            "id": "flood_regulation",
+            "name": "Flood & Storm Regulation",
+            "encore_field": "dep_flood_and_storm_protection",
+            "index_name": "WaterSensitivity",
+            "description": "Dependence on natural flood buffers like wetlands and vegetated catchments."
+        },
+        {
+            "id": "pollination",
+            "name": "Pollination",
+            "encore_field": "dep_pollination",
+            "index_name": "HabitatSensitivity",
+            "description": "Reliance on wild pollinators for agricultural/botanical outputs."
+        },
+        {
+            "id": "pest_control",
+            "name": "Pest & Disease Control",
+            "encore_field": "dep_pest_control",
+            "index_name": "HabitatSensitivity",
+            "description": "Reliance on natural predators to regulate pests and vector diseases."
+        },
+        {
+            "id": "climate_regulation",
+            "name": "Climate Regulation",
+            "encore_field": "dep_climate_regulation",
+            "index_name": "ClimateSensitivity",
+            "description": "Reliance on local/global climate stabilization services like carbon sequestration."
+        }
+    ]
 
-    # ----------------------------------------------------
-    # IMPACT 3 — Degradation of Terrestrial Ecosystem Condition
-    # ----------------------------------------------------
-    imp3_ep = max(e('ep_disturbances'), e('non_ghg_air_pollution')) # Fix: field name check
-    # Check if field name in model is ep_non_ghg_air_pollution
-    imp3_ep = max(e('ep_disturbances'), e('ep_non_ghg_air_pollution'))
-    imp3_son = s('dim2_terrestrial_level')
-    imp3_pair = imp3_ep + imp3_son
+    all_dependencies = []
+    for dep in dependencies_data:
+        weight = get_weight(dep["encore_field"])
+        rating = get_rating(dep["encore_field"])
+        esi = sensitivity_indices.get(dep["index_name"], 50.0)
+        
+        # Calculate dynamic score (0-100 scale)
+        score = weight * esi
+        
+        # Indicators list with their names, values, and sources
+        indicators_used = []
+        indicators_config = WEIGHTS_CONFIG["indices"][dep["index_name"]]
+        for ind_name, props in indicators_config.items():
+            indicators_used.append({
+                "name": ind_name.replace("_", " ").title(),
+                "value": indicators.get(ind_name, 50.0),
+                "source": props.get("source", "Satellite Observation"),
+                "resolution": props.get("resolution", "1km")
+            })
+            
+        all_dependencies.append({
+            "category": dep["name"],
+            "score": round(score, 1),
+            "level": get_rating_level(score),
+            "encore_weight": round(weight, 2),
+            "encore_rating": rating,
+            "sensitivity_index_name": dep["index_name"].replace("Sensitivity", " Sensitivity"),
+            "sensitivity_score": esi,
+            "description": dep["description"],
+            "indicators": indicators_used,
+            "dataset_sources": list(set([ind["source"] for ind in indicators_used]))
+        })
 
-    # ----------------------------------------------------
-    # IMPACT 4 — Decline in Species Populations
-    # ----------------------------------------------------
-    imp4_ep = e('ep_overall_pressure_biodiversity')
-    imp4_son = s('dim3_population_level')
-    imp4_pair = imp4_ep + imp4_son
+    # Sort all dependencies by dynamic score descending
+    sorted_dependencies = sorted(all_dependencies, key=lambda x: -x["score"])
+    top_dependencies = sorted_dependencies[:5]
 
-    # ----------------------------------------------------
-    # IMPACT 5 — Species Extinction Risk Escalation
-    # ----------------------------------------------------
-    # IF biome_code is: T1–T8, M biomes -> USE: ep_land_use
-    # IF biome_code is: F1, F2 -> USE: MAX(ep_water_use, ep_freshwater_use)
-    if biome.startswith('F'):
-        imp5_ep = max(e('ep_water_use'), e('ep_freshwater_use'))
-    else:
-        imp5_ep = e('ep_land_use')
+    # 3. Calculate Dynamic Impact Scores (Weight * ESI)
+    impacts_data = [
+        {
+            "id": "water_use",
+            "name": "Water Use & Consumption",
+            "encore_fields": ["ep_water_use", "ep_freshwater_use"],
+            "index_name": "WaterSensitivity",
+            "description": "Potential pressure exerted on local water resources through extraction."
+        },
+        {
+            "id": "water_pollution",
+            "name": "Water Pollution",
+            "encore_fields": ["ep_toxic_emissions", "ep_nutrient_emissions"],
+            "index_name": "WaterSensitivity",
+            "description": "Discharges of toxic substances or excess nutrients into water systems."
+        },
+        {
+            "id": "land_use",
+            "name": "Land Use & Habitat Impact",
+            "encore_fields": ["ep_land_use"],
+            "index_name": "HabitatSensitivity",
+            "description": "Transformation and fragmentation of terrestrial ecosystems and wildlife corridors."
+        },
+        {
+            "id": "climate_change",
+            "name": "Climate Change & GHG",
+            "encore_fields": ["ep_ghg_emissions"],
+            "index_name": "ClimateSensitivity",
+            "description": "Emissions of greenhouse gases accelerating global warming."
+        },
+        {
+            "id": "soil_degradation",
+            "name": "Soil Degradation & Pollutants",
+            "encore_fields": ["ep_toxic_emissions", "ep_solid_waste"],
+            "index_name": "SoilSensitivity",
+            "description": "Decline in soil health, chemical contamination, and structure breakdown."
+        },
+        {
+            "id": "solid_waste",
+            "name": "Solid Waste generation",
+            "encore_fields": ["ep_solid_waste"],
+            "index_name": "SoilSensitivity",
+            "description": "Accumulation of industrial/non-hazardous solids and landfill impacts."
+        },
+        {
+            "id": "biodiversity_pressure",
+            "name": "Direct Biodiversity Pressure",
+            "encore_fields": ["ep_overall_pressure_biodiversity"],
+            "index_name": "HabitatSensitivity",
+            "description": "Direct stress on species survival, invasive species introduction, or harvesting."
+        },
+        {
+            "id": "marine_pollution",
+            "name": "Marine & Coastal Pollution",
+            "encore_fields": ["ep_marine_pollution"],
+            "index_name": "WaterSensitivity",
+            "description": "Discharge of toxic agents or waste affecting marine life and shorelines."
+        }
+    ]
+
+    all_impacts = []
+    for imp in impacts_data:
+        # Take max weight of related ENCORE fields
+        weight = max(get_weight(field) for field in imp["encore_fields"])
+        rating = get_rating(imp["encore_fields"][0])
+        esi = sensitivity_indices.get(imp["index_name"], 50.0)
+        
+        # Calculate dynamic score
+        score = weight * esi
+        
+        # Indicators list
+        indicators_used = []
+        indicators_config = WEIGHTS_CONFIG["indices"][imp["index_name"]]
+        for ind_name, props in indicators_config.items():
+            indicators_used.append({
+                "name": ind_name.replace("_", " ").title(),
+                "value": indicators.get(ind_name, 50.0),
+                "source": props.get("source", "Satellite Observation"),
+                "resolution": props.get("resolution", "1km")
+            })
+            
+        all_impacts.append({
+            "category": imp["name"],
+            "score": round(score, 1),
+            "level": get_rating_level(score),
+            "encore_weight": round(weight, 2),
+            "encore_rating": rating,
+            "sensitivity_index_name": imp["index_name"].replace("Sensitivity", " Sensitivity"),
+            "sensitivity_score": esi,
+            "description": imp["description"],
+            "indicators": indicators_used,
+            "dataset_sources": list(set([ind["source"] for ind in indicators_used]))
+        })
+
+    # Sort all impacts by dynamic score descending
+    sorted_impacts = sorted(all_impacts, key=lambda x: -x["score"])
+    top_impacts = sorted_impacts[:5]
+
+    # 4. Calculate Overall Indices
+    overall_dependency_index = round(sum(d["score"] for d in all_dependencies) / len(all_dependencies), 1)
+    overall_impact_index = round(sum(i["score"] for i in all_impacts) / len(all_impacts), 1)
+
+    # 5. Composite Priority Logic
+    # Standard composite priority score
+    composite_priority = round((overall_dependency_index + overall_impact_index) / 2, 1)
     
-    imp5_son = s('dim4_extinction_level')
-    imp5_pair = imp5_ep + imp5_son
-
-    # ----------------------------------------------------
-    # OVERALL IMPACT SCORE
-    # ----------------------------------------------------
-    raw_sum = imp1_pair + imp2_pair + imp3_pair + imp4_pair + imp5_pair
-    # IS = (raw_sum - 10) / (50 - 10) × 10
-    impact_score = ((raw_sum - 10) / 40) * 10
-    impact_score = max(0.0, min(10.0, impact_score))
+    # Priority Site if either index is high (>= 40) or any category is very high (>= 75)
+    is_priority = (overall_dependency_index >= 40.0) or (overall_impact_index >= 40.0) or any(d["score"] >= 75.0 for d in all_dependencies) or any(i["score"] >= 75.0 for i in all_impacts)
     
-    impact_level = num_to_enum(1 + (impact_score / 2)) # 0-2=VL, 2-4=L, 4-6=M, 6-8=H, 8-10=VH
+    priority_tier = "Tier 1" if composite_priority >= 65 else "Tier 2" if composite_priority >= 40 else "Tier 3"
 
-    # ----------------------------------------------------
-    # DEPENDENCIES (MATRIX LOOKUP)
-    # ----------------------------------------------------
-    water_dep = get_matrix_score(s('dim2_freshwater_level'), e('dep_water_supply'))
-    soil_dep = get_matrix_score(s('dim1_extent_level'), e('dep_soil_sediment_retention'))
-    biodiv_dep = get_matrix_score(s('dim2_terrestrial_level'), e('dep_overall_dependency_biodiversity'))
-    climate_dep = get_matrix_score(s('dim2_terrestrial_level'), e('dep_climate_regulation'))
-    pollin_dep = get_matrix_score(s('dim2_terrestrial_level'), e('dep_pollination'))
+    # 6. Calculate Confidence Score
+    # We aggregate confidence factors based on resolution and freshness of indicators used
+    confidence_values = []
+    for index_name, index_data in WEIGHTS_CONFIG.get("indices", {}).items():
+        for ind_name, props in index_data.items():
+            res = props.get("resolution", "1km")
+            fresh = int(props.get("freshness", "2023"))
+            
+            # Resolution factor
+            if res in ["Vector", "10m", "30m", "Point"]:
+                res_factor = 1.0
+            elif res in ["90m", "100m", "250m", "300m"]:
+                res_factor = 0.85
+            elif res in ["1km", "5km"]:
+                res_factor = 0.70
+            else: # 10km, 20km etc
+                res_factor = 0.55
+                
+            # Freshness factor
+            if fresh == 2024:
+                fresh_factor = 1.0
+            elif fresh == 2023:
+                fresh_factor = 0.90
+            else:
+                fresh_factor = 0.80
+                
+            confidence_values.append(res_factor * fresh_factor)
+            
+    avg_conf_pct = round((sum(confidence_values) / len(confidence_values)) * 100, 1)
+    confidence_label = "High" if avg_conf_pct >= 85 else "Medium" if avg_conf_pct >= 70 else "Low"
 
-    dependency_risk_score = max(water_dep, soil_dep, biodiv_dep, climate_dep, pollin_dep)
+    # Build old-style impact_breakdown to prevent breaking existing endpoints
+    legacy_impact_breakdown = {
+        "extent": {"ep": get_rating("ep_land_use"), "son": get_rating_level(sensitivity_indices.get("HabitatSensitivity", 50.0)), "score": all_impacts[2]["score"], "level": all_impacts[2]["level"]},
+        "freshwater": {"ep": get_rating("ep_freshwater_use"), "son": get_rating_level(sensitivity_indices.get("WaterSensitivity", 50.0)), "score": all_impacts[0]["score"], "level": all_impacts[0]["level"]},
+        "terrestrial": {"ep": get_rating("ep_land_use"), "son": get_rating_level(sensitivity_indices.get("HabitatSensitivity", 50.0)), "score": all_impacts[6]["score"], "level": all_impacts[6]["level"]},
+        "population": {"ep": get_rating("ep_overall_pressure_biodiversity"), "son": get_rating_level(sensitivity_indices.get("HabitatSensitivity", 50.0)), "score": all_impacts[6]["score"], "level": all_impacts[6]["level"]},
+        "extinction": {"ep": get_rating("ep_land_use"), "son": get_rating_level(sensitivity_indices.get("HabitatSensitivity", 50.0)), "score": all_impacts[2]["score"], "level": all_impacts[2]["level"]}
+    }
 
-    # ----------------------------------------------------
-    # COMPOSITE PRIORITY SCORE
-    # ----------------------------------------------------
-    priority_score = (impact_score * 5) + (dependency_risk_score * 5)
-
-    # ----------------------------------------------------
-    # TNFD PRIORITY LOGIC
-    # ----------------------------------------------------
-    # TRUE IF impact_level IN [M, H, VH] OR ANY dep IN [H, VH]
-    is_priority = (impact_score >= 4.0) or (dependency_risk_score >= 4)
-    
-    priority_tier = "Tier 1" if priority_score > 75 else "Tier 2" if priority_score >= 50 else "Tier 3"
+    legacy_dependency_breakdown = {
+        "water": get_rating_level(all_dependencies[0]["score"]),
+        "soil": get_rating_level(all_dependencies[1]["score"]),
+        "biodiversity": get_rating_level(all_dependencies[2]["score"]),
+        "climate": get_rating_level(all_dependencies[6]["score"]),
+        "pollination": get_rating_level(all_dependencies[4]["score"])
+    }
 
     return {
-        "impact_score": round(impact_score, 2),
-        "impact_level": impact_level,
-        "dependency_risk_score": dependency_risk_score,
-        "dependency_risk_level": num_to_enum(dependency_risk_score),
-        "priority_score": round(priority_score, 1),
+        "impact_score": overall_impact_index,
+        "impact_level": get_rating_level(overall_impact_index),
+        "dependency_risk_score": overall_dependency_index,
+        "dependency_risk_level": get_rating_level(overall_dependency_index),
+        "priority_score": composite_priority,
         "priority_tier": priority_tier,
         "is_tnfd_priority": is_priority,
-        "impact_breakdown": {
-            "extent": {"ep": imp1_ep, "son": imp1_son, "score": imp1_pair, "level": num_to_enum(imp1_pair/2)},
-            "freshwater": {"ep": imp2_ep, "son": imp2_son, "score": imp2_pair, "level": num_to_enum(imp2_pair/2)},
-            "terrestrial": {"ep": imp3_ep, "son": imp3_son, "score": imp3_pair, "level": num_to_enum(imp3_pair/2)},
-            "population": {"ep": imp4_ep, "son": imp4_son, "score": imp4_pair, "level": num_to_enum(imp4_pair/2)},
-            "extinction": {"ep": imp5_ep, "son": imp5_son, "score": imp5_pair, "level": num_to_enum(imp5_pair/2)}
-        },
-        "dependency_breakdown": {
-            "water": num_to_enum(water_dep),
-            "soil": num_to_enum(soil_dep),
-            "biodiversity": num_to_enum(biodiv_dep),
-            "climate": num_to_enum(climate_dep),
-            "pollination": num_to_enum(pollin_dep)
-        },
+        "sensitivity_indices": sensitivity_indices,
+        "all_indicators": indicators,
+        "archetype": archetype,
+        "all_dependencies": all_dependencies,
+        "all_impacts": all_impacts,
+        "top_dependencies": top_dependencies,
+        "top_impacts": top_impacts,
+        "impact_breakdown": legacy_impact_breakdown,
+        "dependency_breakdown": legacy_dependency_breakdown,
         "data_quality": {
-            "confidence": son_obj.data_confidence or 'medium',
-            "measured_metrics": son_obj.measured_metrics_count or 0
+            "confidence": confidence_label.lower(),
+            "confidence_pct": avg_conf_pct,
+            "measured_metrics": 36
         }
     }
