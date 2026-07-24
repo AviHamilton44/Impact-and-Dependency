@@ -10,6 +10,45 @@ import os
 # Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
+# Database migration helper: Ensure metrics, measured_metrics_count, and data_confidence columns exist in site_son_scores
+from sqlalchemy import text
+try:
+    with engine.begin() as conn:
+        # Postgres check
+        if "postgresql" in str(engine.url):
+            # Check metrics column
+            res = conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name='site_son_scores' AND column_name='metrics'"))
+            if not res.fetchone():
+                conn.execute(text("ALTER TABLE site_son_scores ADD COLUMN metrics JSONB"))
+                print("Migration: Added metrics JSONB column to site_son_scores.")
+            
+            # Check measured_metrics_count column
+            res = conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name='site_son_scores' AND column_name='measured_metrics_count'"))
+            if not res.fetchone():
+                conn.execute(text("ALTER TABLE site_son_scores ADD COLUMN measured_metrics_count INTEGER DEFAULT 0"))
+                print("Migration: Added measured_metrics_count column to site_son_scores.")
+                
+            # Check data_confidence column
+            res = conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name='site_son_scores' AND column_name='data_confidence'"))
+            if not res.fetchone():
+                conn.execute(text("ALTER TABLE site_son_scores ADD COLUMN data_confidence VARCHAR"))
+                print("Migration: Added data_confidence column to site_son_scores.")
+        else:
+            # SQLite check
+            res = conn.execute(text("PRAGMA table_info(site_son_scores)"))
+            columns = [row[1] for row in res.fetchall()]
+            if 'metrics' not in columns:
+                conn.execute(text("ALTER TABLE site_son_scores ADD COLUMN metrics JSON"))
+                print("Migration: Added metrics JSON column to site_son_scores (SQLite).")
+            if 'measured_metrics_count' not in columns:
+                conn.execute(text("ALTER TABLE site_son_scores ADD COLUMN measured_metrics_count INTEGER DEFAULT 0"))
+                print("Migration: Added measured_metrics_count column to site_son_scores (SQLite).")
+            if 'data_confidence' not in columns:
+                conn.execute(text("ALTER TABLE site_son_scores ADD COLUMN data_confidence VARCHAR"))
+                print("Migration: Added data_confidence column to site_son_scores (SQLite).")
+except Exception as e:
+    print(f"Error executing startup database migration: {e}")
+
 # Auto-seed ENCORE dataset if empty
 db = SessionLocal()
 try:

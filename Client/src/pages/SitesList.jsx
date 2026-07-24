@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchSites, clearSites, deleteSite } from '../api';
 import { 
   Search, 
@@ -16,7 +16,8 @@ import { cn } from '../lib/utils';
 
 export default function SitesList() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { data: sites, isLoading, refetch } = useQuery({ queryKey: ['sites'], queryFn: fetchSites });
+  const queryClient = useQueryClient();
+  const { data: sites, isLoading } = useQuery({ queryKey: ['sites'], queryFn: fetchSites });
 
   const filteredSites = sites?.filter(s => 
     s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,14 +29,20 @@ export default function SitesList() {
       e.preventDefault();
       e.stopPropagation();
     }
+    console.log("Clear All Assets clicked");
     if (window.confirm("Are you sure you want to remove all pre-existing sites? This cannot be undone.")) {
       try {
-        await clearSites();
-        refetch();
+        console.log("Sending clear request to backend...");
+        const res = await clearSites();
+        console.log("Clear response:", res);
+        alert("Successfully cleared all assets!");
+        queryClient.invalidateQueries();
       } catch (err) {
-        console.error(err);
+        console.error("Error clearing assets:", err);
         alert("Failed to clear sites: " + (err.response?.data?.detail || err.message));
       }
+    } else {
+      console.log("Clear All Assets action cancelled by user");
     }
   };
 
@@ -44,14 +51,20 @@ export default function SitesList() {
       e.preventDefault();
       e.stopPropagation();
     }
+    console.log("Delete site clicked for ID:", siteId);
     if (window.confirm("Are you sure you want to delete this site?")) {
       try {
-        await deleteSite(siteId);
-        refetch();
+        console.log("Sending delete request to backend for ID:", siteId);
+        const res = await deleteSite(siteId);
+        console.log("Delete response:", res);
+        alert("Successfully deleted the site!");
+        queryClient.invalidateQueries();
       } catch (err) {
-        console.error(err);
+        console.error("Error deleting site:", err);
         alert("Failed to delete site: " + (err.response?.data?.detail || err.message));
       }
+    } else {
+      console.log("Delete action cancelled by user");
     }
   };
 
