@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 router = APIRouter(prefix="/api")
 
-SON_BACKEND_URL = os.getenv("SON_BACKEND_URL", "http://localhost:8000")
+SON_BACKEND_URL = os.getenv("SON_BACKEND_URL", "http://localhost:8001")
 
 @router.get("/activities", response_model=List[str])
 def get_activities(db: Session = Depends(get_db)):

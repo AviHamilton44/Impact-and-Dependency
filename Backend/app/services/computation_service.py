@@ -135,7 +135,154 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
         return {}
 
     # 1. Generate Site Environmental Indicators & Sensitivity Indices
-    archetype, indicators = generate_site_indicators(site_obj, WEIGHTS_CONFIG)
+    use_simulated = True
+    indicators = {}
+    measured_slugs = set()
+    archetype = "GEE Spatial Analysis"
+    measured_count = 27
+    
+    if son_obj and hasattr(son_obj, "metrics") and son_obj.metrics:
+        use_simulated = False
+        son_metrics = son_obj.metrics
+        metric_concerns = son_metrics.get("metric_concerns", {})
+        
+        # Substring mapping from GEE display names to config slugs
+        DISPLAY_NAME_TO_SLUG = {
+            "aridity": "aridity_index",
+            "trophic state": "tspi",
+            "ndci": "tspi",
+            "algal bloom": "sabf",
+            "water clarity": "wcpi",
+            "water surface dynamics": "wsdi",
+            "persistence": "jrc_water_persistence",
+            "shoreline development": "shdi",
+            "riparian complexity": "rci",
+            "natural habitat": "natural_habitat",
+            "natural land cover": "natural_landcover",
+            "connectivity": "cpland",
+            "cpland": "cpland",
+            "kba": "kba_overlap",
+            "forest landscape integrity": "flii",
+            "flii": "flii",
+            "ecosystem integrity": "eii",
+            "biodiversity intactness": "bii",
+            "bii": "bii",
+            "potentially disappeared fraction": "pdf",
+            "endemic species richness": "endemic_richness",
+            "flagship habitat": "flagship_habitat",
+            "endemic plant": "endemic_plant_richness",
+            "threatened species richness": "threatened_richness",
+            "extinction-risk index": "ceri",
+            "ceri": "ceri",
+            "star_t": "star_t",
+            "threatened plant": "threatened_plant_richness",
+            "vegetation structure": "ndvi",
+            "ndvi": "ndvi",
+            "habitat health": "habitat_health",
+            "leaf area": "lai",
+            "lai": "lai",
+            "canopy height": "chm",
+            "chm": "chm",
+            "tree cover loss": "forest_loss_rate",
+            "riparian ndvi temporal trend": "riparian_ndvi_trend",
+            "human modification": "ghm",
+            "human disturbance": "hdi",
+            "light pollution": "light_pollution"
+        }
+        
+        raw_metrics = son_metrics.get("raw_metrics", {})
+        
+        # Flatten raw_metrics (which is nested by pillar)
+        flat_raw = {}
+        for pillar_name, pillar_data in raw_metrics.items():
+            if isinstance(pillar_data, dict):
+                for key, val in pillar_data.items():
+                    flat_raw[key] = val
+                    
+        # Sort patterns by length descending to prevent key collisions (e.g. ndvi vs riparian ndvi temporal trend)
+        sorted_patterns = sorted(DISPLAY_NAME_TO_SLUG.items(), key=lambda x: len(x[0]), reverse=True)
+        
+        # Map raw keys to slugs
+        flat_slugged = {}
+        for raw_key, raw_val in flat_raw.items():
+            raw_key_lower = raw_key.lower()
+            matched_slug = None
+            for pattern, slug in sorted_patterns:
+                if pattern in raw_key_lower:
+                    matched_slug = slug
+                    break
+            if matched_slug:
+                flat_slugged[matched_slug] = raw_val
+                
+        # Double safe: fall back to metric_concerns flat structure if raw_metrics didn't have it
+        for slug, concern_info in metric_concerns.items():
+            if isinstance(concern_info, dict):
+                site_val = concern_info.get("site_value")
+                if site_val is not None and site_val != "Coming soon":
+                    if flat_slugged.get(slug) is None:
+                        flat_slugged[slug] = site_val
+
+        # Count active matched indicators in config
+        all_weights_slugs = set()
+        for idx_name, idx_data in WEIGHTS_CONFIG.get("indices", {}).items():
+            for ind_slug in idx_data.keys():
+                all_weights_slugs.add(ind_slug)
+        measured_count = len([k for k, v in flat_slugged.items() if k in all_weights_slugs and v is not None])
+
+        for index_name, index_data in WEIGHTS_CONFIG.get("indices", {}).items():
+            for ind_name, ind_props in index_data.items():
+                direction = ind_props.get("direction", "direct")
+                
+                # Retrieve indicator value on 0-100 scale
+                val = 50.0
+                fval = flat_slugged.get(ind_name)
+                
+                if fval is not None:
+                    measured_slugs.add(ind_name)
+                    try:
+                        fval = float(fval)
+                        # Normalize fval to 0-100 scale based on slug
+                        if ind_name in ["bii", "natural_habitat", "natural_landcover", "cpland", "pdf", "eii", "eii_structural", "eii_compositional", "eii_functional", "flagship_habitat", "ghm", "hdi"]:
+                            val = fval * 100.0
+                        elif ind_name == "flii":
+                            val = fval * 10.0
+                        elif ind_name == "aridity_index":
+                            val = (fval / 5.0) * 100.0
+                        elif ind_name in ["ndvi", "tspi"]:
+                            val = (fval + 1.0) / 2.0 * 100.0
+                        elif ind_name == "habitat_health":
+                            val = (fval / 50.0) * 100.0
+                        elif ind_name == "lai":
+                            val = (fval / 8.0) * 100.0
+                        elif ind_name == "chm":
+                            val = (fval / 80.0) * 100.0
+                        elif ind_name == "riparian_ndvi_trend":
+                            val = (fval + 0.5) * 100.0
+                        elif ind_name == "light_pollution":
+                            val = (fval / 500.0) * 100.0
+                        else:
+                            # Default multiplier if 0-1 fraction
+                            if fval <= 1.0:
+                                val = fval * 100.0
+                            else:
+                                val = fval
+                                
+                        # Clamp to [0, 100]
+                        val = max(0.0, min(100.0, val))
+                    except Exception:
+                        val = 50.0
+                
+                # Apply Direct/Inverse mapping (where higher = higher ecological concern/sensitivity)
+                if direction == "inverse":
+                    normalized = 100.0 - val
+                else:
+                    normalized = val
+                    
+                indicators[ind_name] = round(normalized, 1)
+                
+    if use_simulated:
+        archetype, indicators = generate_site_indicators(site_obj, WEIGHTS_CONFIG)
+        measured_count = len(indicators)
     
     sensitivity_indices = {}
     for index_name, index_data in WEIGHTS_CONFIG.get("indices", {}).items():
@@ -347,7 +494,8 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
     priority_tier = "Tier 1" if composite_priority >= 65 else "Tier 2" if composite_priority >= 40 else "Tier 3"
 
     # 6. Calculate Confidence Score
-    # We aggregate confidence factors based on resolution and freshness of indicators used
+    # We aggregate confidence factors based on resolution and freshness of indicators used.
+    # If the indicator is simulated/fallback proxy, we apply a low multiplier penalty.
     confidence_values = []
     for index_name, index_data in WEIGHTS_CONFIG.get("indices", {}).items():
         for ind_name, props in index_data.items():
@@ -372,7 +520,11 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
             else:
                 fresh_factor = 0.80
                 
-            confidence_values.append(res_factor * fresh_factor)
+            # Dynamic multiplier: 1.0 if measured from GEE, 0.25 if simulated / fallback
+            is_measured = (not use_simulated) and (ind_name in measured_slugs)
+            multiplier = 1.0 if is_measured else 0.25
+            
+            confidence_values.append(res_factor * fresh_factor * multiplier)
             
     avg_conf_pct = round((sum(confidence_values) / len(confidence_values)) * 100, 1)
     confidence_label = "High" if avg_conf_pct >= 85 else "Medium" if avg_conf_pct >= 70 else "Low"
@@ -414,6 +566,6 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
         "data_quality": {
             "confidence": confidence_label.lower(),
             "confidence_pct": avg_conf_pct,
-            "measured_metrics": 36
+            "measured_metrics": measured_count
         }
     }

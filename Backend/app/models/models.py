@@ -73,6 +73,7 @@ class SiteSonScore(Base):
     biome_code = Column(String)
     data_confidence = Column(String) # 'low', 'medium', 'high'
     measured_metrics_count = Column(Integer, default=0)
+    metrics = Column(JSON)
 
 class IndustryLeapData(Base):
     __tablename__ = 'industry_leap_data'
