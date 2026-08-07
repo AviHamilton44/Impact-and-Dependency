@@ -1,0 +1,460 @@
+{
+  "Extent": 1.0,
+  "metrics": {
+    "Pillar-5: Pressure": {
+      "Invasive Risk Index": 0.3339,
+      "Human Disturbance Index": 0.9595,
+      "Light Pollution (VIIRS)": 0.327934,
+      "Global Human Modification": 0.8049,
+      "Daytime Surface Temperature": null,
+      "Shoreline Disturbance Index": 0.3024,
+      "Nighttime Surface Temperature": null,
+      "Invasive Vegetation Spread Index": 0.0,
+      "Surface Temperature Stress Index": 0.3251
+    },
+    "Pillar-3: Population": {
+      "Endemic Species Richness": "Coming soon",
+      "Flagship Habitat Viability": 0.0,
+      "Endemic Plant Species Richness": "Coming soon"
+    },
+    "Pillar-4: Extinction Risk": {
+      "STAR_T (Threat Abatement)": "Coming soon",
+      "Threatened Species Richness": "Coming soon",
+      "Composite Extinction-Risk Index": "Coming soon",
+      "Threatened Plant Species Richness": "Coming soon"
+    },
+    "Pillar-1: Ecosystem Extent": {
+      "KBA/IBA Overlap": 0.0,
+      "Tree Cover Loss Rate": 0.0,
+      "Natural Habitat Extent": 0.0,
+      "Natural Land Cover Proportion": 0.0,
+      "Landscape Connectivity (CPLAND)": 0.0
+    },
+    "Pillar-2: Ecosystem Condition": {
+      "Aridity Index": "Coming soon",
+      "EII: Functional Integrity": "Coming soon",
+      "EII: Structural Integrity": 0.0,
+      "Ecosystem Integrity Index": 0.0,
+      "Riparian Complexity Index": 0.3017,
+      "Water Clarity Proxy Index": 0.4211,
+      "Habitat Health Index (HHI)": -0.6567,
+      "eDNA Persistence Potential": 0.1413,
+      "Vegetation Structure (NDVI)": -0.6407,
+      "EII: Compositional Integrity": "Coming soon",
+      "Riparian NDVI Temporal Trend": -0.0221,
+      "Water Surface Dynamics Index": 0.1724,
+      "Biodiversity Intactness Index": "Coming soon",
+      "Surface Algal Bloom Frequency": 0.0007,
+      "Forest Landscape Integrity Index": "Coming soon",
+      "Leaf Area Index (MODIS MCD15A3H)": "Coming soon",
+      "Potentially Disappeared Fraction": 0.0,
+      "Trophic State Proxy Index (NDCI)": -0.1051,
+      "Microbial Stress Probability Layer": 0.3076,
+      "Canopy Height Model (GEDI L2A rh98)": 1.0,
+      "Habitat Suitability Alignment Score": 0.2254,
+      "JRC Water Persistence (Permanent Fraction)": "Coming soon",
+      "Shoreline Development Index (Morphometric)": 1.4998
+    }
+  },
+  "n_valid": 3,
+  "partial": true,
+  "Condition": 2.69,
+  "SoN Score": 4.7,
+  "Extinction": null,
+  "Population": 5.0,
+  "raw_metrics": {
+    "Pillar-5: Pressure": {
+      "Invasive Risk Index": 0.3339,
+      "Human Disturbance Index": 0.9595,
+      "Light Pollution (VIIRS)": 32.7934,
+      "Global Human Modification": 0.8049,
+      "Daytime Surface Temperature": null,
+      "Shoreline Disturbance Index": 0.3024,
+      "Nighttime Surface Temperature": null,
+      "Invasive Vegetation Spread Index": 0.0,
+      "Surface Temperature Stress Index": 0.3251
+    },
+    "Pillar-3: Population": {
+      "Endemic Species Richness": null,
+      "Flagship Habitat Viability": 0.0,
+      "Endemic Plant Species Richness": null
+    },
+    "Pillar-4: Extinction Risk": {
+      "STAR_T (Threat Abatement)": null,
+      "Threatened Species Richness": null,
+      "Composite Extinction-Risk Index": null,
+      "Threatened Plant Species Richness": null
+    },
+    "Pillar-1: Ecosystem Extent": {
+      "KBA/IBA Overlap": 0.0,
+      "Tree Cover Loss Rate": 0.0,
+      "Natural Habitat Extent": 0.0,
+      "Natural Land Cover Proportion": 0.0,
+      "Landscape Connectivity (CPLAND)": 0.0
+    },
+    "Pillar-2: Ecosystem Condition": {
+      "Aridity Index": null,
+      "EII: Functional Integrity": null,
+      "EII: Structural Integrity": 0.0,
+      "Ecosystem Integrity Index": 0.0,
+      "Riparian Complexity Index": 0.3017,
+      "Water Clarity Proxy Index": 0.4211,
+      "Habitat Health Index (HHI)": -5.2677,
+      "eDNA Persistence Potential": 0.1413,
+      "Vegetation Structure (NDVI)": -0.5226,
+      "EII: Compositional Integrity": null,
+      "Riparian NDVI Temporal Trend": -0.0221,
+      "Water Surface Dynamics Index": 0.1724,
+      "Biodiversity Intactness Index": null,
+      "Surface Algal Bloom Frequency": 0.0007,
+      "Forest Landscape Integrity Index": null,
+      "Leaf Area Index (MODIS MCD15A3H)": null,
+      "Potentially Disappeared Fraction": 0.0,
+      "Trophic State Proxy Index (NDCI)": -0.1051,
+      "Microbial Stress Probability Layer": 0.3076,
+      "Canopy Height Model (GEDI L2A rh98)": 2.4484,
+      "Habitat Suitability Alignment Score": 0.2254,
+      "JRC Water Persistence (Permanent Fraction)": null,
+      "Shoreline Development Index (Morphometric)": 1.4998
+    }
+  },
+  "Pressure Score": 6.97,
+  "metric_concerns": {
+    "bii": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Biodiversity Intactness Index",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "chm": {
+      "protocol": "B v1.0 (Tier 1 fallback \u2014 T2 unavailable)",
+      "site_value": 2.4484,
+      "display_name": "Canopy Height Model (GEDI L2A rh98)",
+      "concern_label": "VL",
+      "concern_numeric": 1,
+      "intactness_used": 1.0
+    },
+    "eii": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": 0.0,
+      "display_name": "Ecosystem Integrity Index",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "lai": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Leaf Area Index (MODIS MCD15A3H)",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "pdf": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": 0.0,
+      "display_name": "Potentially Disappeared Fraction",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "rci": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.3017,
+      "display_name": "Riparian Complexity Index",
+      "concern_label": "M",
+      "concern_numeric": 3,
+      "intactness_used": null
+    },
+    "ceri": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Composite Extinction-Risk Index",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "edpp": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.1413,
+      "display_name": "eDNA Persistence Potential",
+      "concern_label": "H",
+      "concern_numeric": 4,
+      "intactness_used": null
+    },
+    "flii": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Forest Landscape Integrity Index",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "hsas": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.2254,
+      "display_name": "Habitat Suitability Alignment Score",
+      "concern_label": "H",
+      "concern_numeric": 4,
+      "intactness_used": null
+    },
+    "mspl": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.3076,
+      "display_name": "Microbial Stress Probability Layer",
+      "concern_label": "L",
+      "concern_numeric": 2,
+      "intactness_used": null
+    },
+    "ndvi": {
+      "protocol": "B v1.0 (Tier 2 intactness)",
+      "site_value": -0.5226,
+      "display_name": "Vegetation Structure (NDVI)",
+      "concern_label": "VH",
+      "concern_numeric": 5,
+      "intactness_used": -0.6407
+    },
+    "sabf": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.0007,
+      "display_name": "Surface Algal Bloom Frequency",
+      "concern_label": "VL",
+      "concern_numeric": 1,
+      "intactness_used": null
+    },
+    "shdi": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 1.4998,
+      "display_name": "Shoreline Development Index (Morphometric)",
+      "concern_label": "VL",
+      "concern_numeric": 1,
+      "intactness_used": null
+    },
+    "tspi": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": -0.1051,
+      "display_name": "Trophic State Proxy Index (NDCI)",
+      "concern_label": "VL",
+      "concern_numeric": 1,
+      "intactness_used": null
+    },
+    "wcpi": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.4211,
+      "display_name": "Water Clarity Proxy Index",
+      "concern_label": "M",
+      "concern_numeric": 3,
+      "intactness_used": null
+    },
+    "wsdi": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.1724,
+      "display_name": "Water Surface Dynamics Index",
+      "concern_label": "VL",
+      "concern_numeric": 1,
+      "intactness_used": null
+    },
+    "cpland": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": 0.0,
+      "display_name": "Landscape Connectivity (CPLAND)",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "star_t": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "STAR_T (Threat Abatement)",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "kba_overlap": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.0,
+      "display_name": "KBA/IBA Overlap",
+      "concern_label": "VL",
+      "concern_numeric": 1,
+      "intactness_used": null
+    },
+    "aridity_index": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Aridity Index",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "eii_functional": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "EII: Functional Integrity",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "eii_structural": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": 0.0,
+      "display_name": "EII: Structural Integrity",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "habitat_health": {
+      "protocol": "B v1.0 (Tier 2 intactness)",
+      "site_value": -5.2677,
+      "display_name": "Habitat Health Index (HHI)",
+      "concern_label": "VH",
+      "concern_numeric": 5,
+      "intactness_used": -0.6567
+    },
+    "natural_habitat": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": 0.0,
+      "display_name": "Natural Habitat Extent",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "endemic_richness": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Endemic Species Richness",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "flagship_habitat": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": 0.0,
+      "display_name": "Flagship Habitat Viability",
+      "concern_label": "VH",
+      "concern_numeric": 5,
+      "intactness_used": null
+    },
+    "forest_loss_rate": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": 0.0,
+      "display_name": "Tree Cover Loss Rate",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "eii_compositional": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "EII: Compositional Integrity",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "natural_landcover": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": 0.0,
+      "display_name": "Natural Land Cover Proportion",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "riparian_ndvi_trend": {
+      "protocol": "A (published absolute threshold)",
+      "site_value": -0.0221,
+      "display_name": "Riparian NDVI Temporal Trend",
+      "concern_label": "H",
+      "concern_numeric": 4,
+      "intactness_used": null
+    },
+    "threatened_richness": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Threatened Species Richness",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "jrc_water_persistence": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "JRC Water Persistence (Permanent Fraction)",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "endemic_plant_richness": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Endemic Plant Species Richness",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    },
+    "threatened_plant_richness": {
+      "protocol": "\u2014 (no reference computable)",
+      "site_value": null,
+      "display_name": "Threatened Plant Species Richness",
+      "concern_label": "\u2014",
+      "concern_numeric": null,
+      "intactness_used": null
+    }
+  },
+  "pillar_concerns": {
+    "Pillar-5: Pressure": {
+      "Invasive Risk Index": null,
+      "Human Disturbance Index": null,
+      "Light Pollution (VIIRS)": null,
+      "Global Human Modification": null,
+      "Daytime Surface Temperature": null,
+      "Shoreline Disturbance Index": null,
+      "Nighttime Surface Temperature": null,
+      "Invasive Vegetation Spread Index": null,
+      "Surface Temperature Stress Index": null
+    },
+    "Pillar-3: Population": {
+      "Endemic Species Richness": 1,
+      "Flagship Habitat Viability": 5,
+      "Endemic Plant Species Richness": 1
+    },
+    "Pillar-4: Extinction Risk": {
+      "STAR_T (Threat Abatement)": 1,
+      "Threatened Species Richness": 1,
+      "Composite Extinction-Risk Index": 1,
+      "Threatened Plant Species Richness": 1
+    },
+    "Pillar-1: Ecosystem Extent": {
+      "KBA/IBA Overlap": 1,
+      "Tree Cover Loss Rate": 1,
+      "Natural Habitat Extent": 1,
+      "Natural Land Cover Proportion": 1,
+      "Landscape Connectivity (CPLAND)": 1
+    },
+    "Pillar-2: Ecosystem Condition": {
+      "Aridity Index": 1,
+      "EII: Functional Integrity": 1,
+      "EII: Structural Integrity": 1,
+      "Ecosystem Integrity Index": 1,
+      "Riparian Complexity Index": 3,
+      "Water Clarity Proxy Index": 3,
+      "Habitat Health Index (HHI)": 5,
+      "eDNA Persistence Potential": 4,
+      "Vegetation Structure (NDVI)": 5,
+      "EII: Compositional Integrity": 1,
+      "Riparian NDVI Temporal Trend": 4,
+      "Water Surface Dynamics Index": 1,
+      "Biodiversity Intactness Index": 1,
+      "Surface Algal Bloom Frequency": 1,
+      "Forest Landscape Integrity Index": 1,
+      "Leaf Area Index (MODIS MCD15A3H)": 1,
+      "Potentially Disappeared Fraction": 1,
+      "Trophic State Proxy Index (NDCI)": 1,
+      "Microbial Stress Probability Layer": 2,
+      "Canopy Height Model (GEDI L2A rh98)": 1,
+      "Habitat Suitability Alignment Score": 4,
+      "JRC Water Persistence (Permanent Fraction)": 1,
+      "Shoreline Development Index (Morphometric)": 1
+    }
+  }
+}

@@ -74,7 +74,17 @@ export default function SiteDetail() {
 
   const { data: detail, isLoading } = useQuery({ 
     queryKey: ['site-detail', siteId], 
-    queryFn: () => fetchSiteDetail(siteId) 
+    queryFn: () => fetchSiteDetail(siteId),
+    refetchInterval: (query) => {
+      const data = query?.state?.data;
+      const confidencePct = data?.analysis?.data_quality?.confidence_pct;
+      // If confidence_pct is 0, the GEE background analysis is running.
+      // Poll every 3 seconds to update the site details once calculations complete.
+      if (confidencePct === 0) {
+        return 3000;
+      }
+      return false;
+    }
   });
 
   if (isLoading) {
@@ -174,6 +184,22 @@ export default function SiteDetail() {
         </div>
       </header>
 
+      {/* BACKGROUND ANALYSIS PROCESSING STATUS BANNER */}
+      {analysis.data_quality?.confidence_pct === 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-[2rem] p-6 flex items-start gap-4 shadow-sm animate-pulse">
+          <div className="p-3 bg-amber-100 text-amber-700 rounded-2xl">
+            <Loader2 className="animate-spin" size={20} />
+          </div>
+          <div className="space-y-1">
+            <h4 className="text-sm font-black text-amber-800 uppercase tracking-tight">Ecological Spatial Analysis In Progress</h4>
+            <p className="text-xs text-amber-700 font-medium">
+              Google Earth Engine is dynamically calculating biodiversity, water stress, and habitat integrity metrics for your KML boundary. 
+              The dashboard will automatically refresh in real-time as analysis results are populated.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <KPICard 
@@ -201,7 +227,13 @@ export default function SiteDetail() {
           title="Spatial Data Confidence" 
           value={`${analysis.data_quality?.confidence_pct?.toFixed(0)}%`} 
           sub={analysis.data_quality?.confidence?.toUpperCase()} 
-          subClass={analysis.data_quality?.confidence === 'high' ? 'text-green-700 bg-green-50 border-green-100' : 'text-amber-700 bg-amber-50 border-amber-100'}
+          subClass={
+            analysis.data_quality?.confidence === 'high' 
+              ? 'text-green-700 bg-green-50 border-green-100' 
+              : analysis.data_quality?.confidence === 'medium'
+              ? 'text-amber-700 bg-amber-50 border-amber-100'
+              : 'text-rose-700 bg-rose-50 border-rose-100'
+          }
           colorClass="text-blue-600"
         />
       </div>

@@ -111,15 +111,75 @@ def generate_site_indicators(site_obj: Any, config: dict) -> tuple:
             
     return archetype, indicators
 
-def compute_sensitivity_index(indicators: dict, index_config: dict) -> float:
-    """Compute weighted sum of indicators for a specific index."""
+def compute_sensitivity_index(indicators: dict, index_config: dict, raw_indicators: dict = None) -> float:
+    """Compute weighted sum of indicators for a specific index utilizing official Protocol thresholds."""
+    PROTOCOL_A = {
+        "bii":  {"breaks": [0.20, 0.40, 0.60, 0.80], "scores": [5, 4, 3, 2, 1]},
+        "flii": {"breaks": [2.0,  4.0,  6.0,  8.0],  "scores": [5, 4, 3, 2, 1]},
+        "msa":  {"breaks": [0.20, 0.40, 0.60, 0.80], "scores": [5, 4, 3, 2, 1]},
+        "flagship_habitat": {"breaks": [0.20, 0.40, 0.60, 0.80], "scores": [5, 4, 3, 2, 1]},
+        "ceri": {"breaks": [0.10, 0.20, 0.35, 0.50], "scores": [1, 2, 3, 4, 5]},
+        "star_t": {"breaks": [1.0, 3.0, 6.0, 9.0], "scores": [1, 2, 3, 4, 5]},
+        "kba_overlap": {"breaks": [1.0, 25.0, 75.0, 99.9], "scores": [1, 2, 3, 4, 5]},
+        "lst_day": {"breaks": [32.0, 36.0, 40.0, 44.0], "scores": [1, 2, 3, 4, 5]},
+        "lst_night": {"breaks": [22.0, 26.0, 30.0, 34.0], "scores": [1, 2, 3, 4, 5]},
+        "ghm": {"breaks": [0.1, 0.3, 0.6, 0.9], "scores": [1, 2, 3, 4, 5]},
+        "hdi": {"breaks": [0.5, 0.6, 0.7, 0.8], "scores": [1, 2, 3, 4, 5]},
+        "light_pollution": {"breaks": [1.0, 5.0, 30.0, 100.0], "scores": [1, 2, 3, 4, 5]},
+    }
+
+    PROTOCOL_B_BREAKS = [30, 50, 70, 85]
+    PROTOCOL_B_SCORES = [5,  4,  3,  2, 1]
+
     weighted_sum = 0.0
     weight_total = 0.0
+    
     for ind_name, props in index_config.items():
         weight = props.get("weight", 0.0)
-        val = indicators.get(ind_name, 50.0)
-        weighted_sum += val * weight
+        direction = props.get("direction", "direct")
+        
+        # Default concern score if missing
+        concern_score = 3.0
+        
+        raw_val = None
+        if raw_indicators:
+            raw_val = raw_indicators.get(ind_name)
+            
+        # Try Protocol A first
+        if ind_name in PROTOCOL_A and raw_val is not None:
+            spec = PROTOCOL_A[ind_name]
+            val = float(raw_val)
+            matched = False
+            for i, b in enumerate(spec["breaks"]):
+                if val < b:
+                    concern_score = float(spec["scores"][i])
+                    matched = True
+                    break
+            if not matched:
+                concern_score = float(spec["scores"][-1])
+        else:
+            # Fallback to Protocol B/C using normalized values
+            concern_0_100 = indicators.get(ind_name, 50.0)
+            
+            if direction == "inverse":
+                intactness = (100.0 - concern_0_100) / 100.0
+                matched = False
+                for i, b in enumerate(PROTOCOL_B_BREAKS):
+                    if (intactness * 100.0) < b:
+                        concern_score = float(PROTOCOL_B_SCORES[i])
+                        matched = True
+                        break
+                if not matched:
+                    concern_score = float(PROTOCOL_B_SCORES[-1])
+            else:
+                concern_score = 1.0 + (concern_0_100 / 25.0)
+                
+        # Map 1-5 concern score back to 0-100 scale
+        val_0_100 = (concern_score - 1.0) / 4.0 * 100.0
+        
+        weighted_sum += val_0_100 * weight
         weight_total += weight
+        
     if weight_total > 0:
         return round(weighted_sum / weight_total, 1)
     return 50.0
@@ -138,6 +198,7 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
     use_simulated = True
     indicators = {}
     measured_slugs = set()
+    flat_slugged = {}
     archetype = "GEE Spatial Analysis"
     measured_count = 27
     
@@ -242,10 +303,14 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
                     try:
                         fval = float(fval)
                         # Normalize fval to 0-100 scale based on slug
-                        if ind_name in ["bii", "natural_habitat", "natural_landcover", "cpland", "pdf", "eii", "eii_structural", "eii_compositional", "eii_functional", "flagship_habitat", "ghm", "hdi"]:
+                        if ind_name in ["natural_habitat", "natural_landcover", "cpland", "forest_loss_rate", "kba_overlap"]:
+                            val = fval
+                        elif ind_name in ["bii", "pdf", "eii", "eii_structural", "eii_compositional", "eii_functional", "flagship_habitat", "ghm", "hdi", "sabf", "wcpi", "wsdi", "hsas", "edpp", "mspl", "rci", "jrc_water_persistence", "ceri", "sdi", "stsi", "iri", "ivsi"]:
                             val = fval * 100.0
                         elif ind_name == "flii":
                             val = fval * 10.0
+                        elif ind_name == "star_t":
+                            val = (fval / 10.0) * 100.0
                         elif ind_name == "aridity_index":
                             val = (fval / 5.0) * 100.0
                         elif ind_name in ["ndvi", "tspi"]:
@@ -260,6 +325,16 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
                             val = (fval + 0.5) * 100.0
                         elif ind_name == "light_pollution":
                             val = (fval / 500.0) * 100.0
+                        elif ind_name in ["endemic_richness", "threatened_richness"]:
+                            val = (fval / 500.0) * 100.0
+                        elif ind_name in ["endemic_plant_richness", "threatened_plant_richness"]:
+                            val = (fval / 1000.0) * 100.0
+                        elif ind_name == "shdi":
+                            val = ((fval - 1.0) / 19.0) * 100.0
+                        elif ind_name == "lst_day":
+                            val = ((fval + 40.0) / 110.0) * 100.0
+                        elif ind_name == "lst_night":
+                            val = ((fval + 40.0) / 90.0) * 100.0
                         else:
                             # Default multiplier if 0-1 fraction
                             if fval <= 1.0:
@@ -286,7 +361,7 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
     
     sensitivity_indices = {}
     for index_name, index_data in WEIGHTS_CONFIG.get("indices", {}).items():
-        sensitivity_indices[index_name] = compute_sensitivity_index(indicators, index_data)
+        sensitivity_indices[index_name] = compute_sensitivity_index(indicators, index_data, flat_slugged)
         
     # Helper to get ENCORE weights
     get_weight = lambda field: RATING_WEIGHT_MAP.get(getattr(encore_obj, field, "VL"), 0.2)
@@ -494,39 +569,20 @@ def calculate_tnfd_outputs(site_obj: Any, encore_obj: Any, son_obj: Any) -> Dict
     priority_tier = "Tier 1" if composite_priority >= 65 else "Tier 2" if composite_priority >= 40 else "Tier 3"
 
     # 6. Calculate Confidence Score
-    # We aggregate confidence factors based on resolution and freshness of indicators used.
-    # If the indicator is simulated/fallback proxy, we apply a low multiplier penalty.
-    confidence_values = []
+    # The confidence score is calculated as a percentage of valid, real-measured indicators
+    # versus the total number of indicators in the index weights configuration.
+    all_weights_slugs = set()
     for index_name, index_data in WEIGHTS_CONFIG.get("indices", {}).items():
-        for ind_name, props in index_data.items():
-            res = props.get("resolution", "1km")
-            fresh = int(props.get("freshness", "2023"))
+        for ind_slug in index_data.keys():
+            all_weights_slugs.add(ind_slug)
             
-            # Resolution factor
-            if res in ["Vector", "10m", "30m", "Point"]:
-                res_factor = 1.0
-            elif res in ["90m", "100m", "250m", "300m"]:
-                res_factor = 0.85
-            elif res in ["1km", "5km"]:
-                res_factor = 0.70
-            else: # 10km, 20km etc
-                res_factor = 0.55
-                
-            # Freshness factor
-            if fresh == 2024:
-                fresh_factor = 1.0
-            elif fresh == 2023:
-                fresh_factor = 0.90
-            else:
-                fresh_factor = 0.80
-                
-            # Dynamic multiplier: 1.0 if measured from GEE, 0.25 if simulated / fallback
-            is_measured = (not use_simulated) and (ind_name in measured_slugs)
-            multiplier = 1.0 if is_measured else 0.25
-            
-            confidence_values.append(res_factor * fresh_factor * multiplier)
-            
-    avg_conf_pct = round((sum(confidence_values) / len(confidence_values)) * 100, 1)
+    total_indicators_count = len(all_weights_slugs) if all_weights_slugs else 1
+    
+    if use_simulated:
+        avg_conf_pct = 0.0
+    else:
+        avg_conf_pct = round((len(measured_slugs) / total_indicators_count) * 100.0, 1)
+        
     confidence_label = "High" if avg_conf_pct >= 85 else "Medium" if avg_conf_pct >= 70 else "Low"
 
     # Build old-style impact_breakdown to prevent breaking existing endpoints

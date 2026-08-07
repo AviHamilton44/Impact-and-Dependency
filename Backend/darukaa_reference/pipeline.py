@@ -1,0 +1,211 @@
+"""
+Pipeline
+========
+
+The top-level orchestrator that ties all components together.
+
+    KML → SiteLoader → EcoregionResolver → ReferenceSelector → StatisticalComparison → ReportGenerator
+
+Usage::
+
+    from darukaa_reference import Pipeline
+
+    pipeline = Pipeline.from_yaml("config.yaml")
+    report = pipeline.run("project_sites.kml")
+"""
+
+from __future__ import annotations
+
+import logging
+import concurrent.futures
+from pathlib import Path
+from typing import Dict, List, Optional, Union
+
+from darukaa_reference.config import Config
+from darukaa_reference.ecoregion import EcoregionResolver
+from darukaa_reference.reference import ReferenceResult, ReferenceSelector
+from darukaa_reference.registry import IndicatorRegistry
+from darukaa_reference.report import ReportGenerator
+from darukaa_reference.site_loader import SiteLoader
+from darukaa_reference.statistics import ComparisonResult, StatisticalComparison
+
+logger = logging.getLogger(__name__)
+
+
+class Pipeline:
+    """
+    End-to-end biodiversity reference benchmarking pipeline.
+
+    Orchestrates:
+        1. Load site geometries from KML/GeoJSON/Shapefile
+        2. Resolve ecoregion for each site
+        3. For each (site × indicator): extract site value, compute Tier 1
+           and Tier 2 reference benchmarks
+        4. Run statistical comparisons
+        5. Generate structured scorecard report
+    """
+
+    def __init__(self, config: Config, registry: IndicatorRegistry):
+        self.config = config
+        self.registry = registry
+        self.loader = SiteLoader()
+        self.resolver = EcoregionResolver(config)
+        self.reference = ReferenceSelector(config)
+        self.stats = StatisticalComparison(config)
+        self.reporter = ReportGenerator(config, registry)
+
+    @classmethod
+    def from_yaml(cls, config_path: str, registry: Optional[IndicatorRegistry] = None) -> "Pipeline":
+        """
+        Create a pipeline from a YAML config file.
+
+        If no registry is provided, creates one with all default indicators.
+        """
+        config = Config.from_yaml(config_path)
+
+        if registry is None:
+            from darukaa_reference.indicators import create_default_registry
+            registry = create_default_registry()
+
+        return cls(config, registry)
+
+    def run(
+        self,
+        site_path: Union[str, List[str]],
+        output_path: Optional[str] = None,
+    ) -> Dict:
+        """
+        Execute the full pipeline.
+
+        Parameters
+        ----------
+        site_path : str or list of str
+            Path(s) to KML/GeoJSON/Shapefile with project sites.
+        output_path : str, optional
+            Where to write the report. If None, uses config.output_dir.
+
+        Returns
+        -------
+        dict
+            The full report dictionary.
+        """
+        # --- 1. Load sites ---
+        logger.info("=" * 60)
+        logger.info("DARUKAA REFERENCE BENCHMARKING PIPELINE")
+        logger.info("=" * 60)
+
+        if isinstance(site_path, list):
+            sites = self.loader.load_multiple(site_path)
+        else:
+            sites = self.loader.load(site_path)
+
+        logger.info(f"Loaded {len(sites)} sites")
+
+        # --- 2. Resolve ecoregions ---
+        logger.info("Resolving ecoregions...")
+        sites = self.resolver.resolve(sites)
+
+        # Build site metadata dict
+        site_metadata = {}
+        for _, row in sites.iterrows():
+            site_metadata[row["site_id"]] = {
+                "ECO_ID": row.get("ECO_ID"),
+                "ECO_NAME": row.get("ECO_NAME"),
+                "BIOME_NAME": row.get("BIOME_NAME"),
+                "REALM": row.get("REALM"),
+            }
+
+        # --- 3. Determine which indicators to run ---
+        if self.config.enabled_indicators:
+            indicators = [
+                self.registry.get(name) for name in self.config.enabled_indicators
+                if name in self.registry
+            ]
+        else:
+            indicators = self.registry.all()
+
+        logger.info(f"Running {len(indicators)} indicators: {[i.name for i in indicators]}")
+
+        # --- 4. For each site × indicator: compute references ---
+        all_ref_results: List[ReferenceResult] = []
+        all_comparisons: List[ComparisonResult] = []
+
+        for _, site_row in sites.iterrows():
+            site_id = site_row["site_id"]
+            eco_id = site_row.get("ECO_ID")
+            site_geom = site_row.geometry
+
+            logger.info(f"\n--- Site: {site_id} (Ecoregion: {eco_id}) ---")
+
+            # Get ecoregion geometry for reference selection
+            eco_geom = None
+            if eco_id is not None:
+                try:
+                    eco_geom = self.resolver.get_ecoregion_geometry(int(eco_id))
+                except Exception as e:
+                    logger.warning(f"Could not get ecoregion geometry: {e}")
+
+            def _process_indicator(spec):
+                logger.info(f"  Computing: {spec.display_name}...")
+                try:
+                    ref_res = self.reference.compute(
+                        indicator_spec=spec,
+                        site_geometry=site_geom,
+                        site_id=site_id,
+                        eco_id=eco_id,
+                        eco_geometry=eco_geom,
+                    )
+                    comp_res = self.stats.compare(ref_res)
+                    
+                    # Log summary
+                    def fmt_val(v):
+                        return f"{v:.4f}" if isinstance(v, float) else str(v)
+                        
+                    if comp_res.tier2_intactness is not None:
+                        logger.info(f"    -> {spec.name}: site={fmt_val(comp_res.site_value)}, T2_ref={fmt_val(comp_res.tier2_reference)}, intactness={comp_res.tier2_intactness:.1%}")
+                    elif comp_res.tier1_intactness is not None:
+                        logger.info(f"    -> {spec.name}: site={fmt_val(comp_res.site_value)}, T1_ref={fmt_val(comp_res.tier1_reference)}, intactness={comp_res.tier1_intactness:.1%}")
+                    elif comp_res.site_value is not None:
+                        logger.info(f"    -> {spec.name}: site={fmt_val(comp_res.site_value)} (no reference)")
+                    else:
+                        logger.info(f"    -> {spec.name}: extraction failed")
+                        
+                    return ref_res, comp_res
+                except Exception as e:
+                    logger.error(f"    -> {spec.name}: error during extraction - {e}")
+                    return None, None
+
+            # Process all indicators concurrently for this site
+            with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+                results = list(executor.map(_process_indicator, indicators))
+
+            for ref_res, comp_res in results:
+                if ref_res is not None:
+                    all_ref_results.append(ref_res)
+                if comp_res is not None:
+                    all_comparisons.append(comp_res)
+
+        # --- 5. Generate report ---
+        if output_path is None:
+            output_path = str(
+                Path(self.config.output_dir) / "benchmark_scorecard"
+            )
+
+        report = self.reporter.generate(
+            comparisons=all_comparisons,
+            site_metadata=site_metadata,
+            output_path=output_path,
+        )
+
+        n_complete = sum(
+            1 for c in all_comparisons
+            if c.tier2_intactness is not None or c.tier1_intactness is not None
+        )
+        logger.info(f"\n{'=' * 60}")
+        logger.info(
+            f"Pipeline complete: {n_complete}/{len(all_comparisons)} "
+            f"indicator-site pairs benchmarked"
+        )
+        logger.info(f"Report: {output_path}")
+
+        return report
